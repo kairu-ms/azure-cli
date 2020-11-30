@@ -3,14 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core import AzCommandsLoader
-from azure.cli.core.commands import AzArgumentContext, CliCommandType
+from azure.cli.core.commands import CliCommandType
+from azure.cli.core.translator import AzTranslatorArgumentContext, AzTranslatorCommandsLoader
 
 from azure.cli.command_modules.monitor._help import helps  # pylint: disable=unused-import
 
 
 # pylint: disable=line-too-long
-class MonitorArgumentContext(AzArgumentContext):
+class MonitorArgumentContext(AzTranslatorArgumentContext):
 
     def resource_parameter(self, dest, arg_group=None, required=True, skip_validator=False, alias='resource',
                            preserve_resource_group_parameter=False):
@@ -29,7 +29,7 @@ class MonitorArgumentContext(AzArgumentContext):
         self.extra('resource_group_name', options_list=['--resource-group', '-g'], arg_group=arg_group)
 
 
-class MonitorCommandsLoader(AzCommandsLoader):
+class MonitorCommandsLoader(AzTranslatorCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.profiles import ResourceType
