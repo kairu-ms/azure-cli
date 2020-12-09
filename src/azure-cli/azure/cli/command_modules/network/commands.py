@@ -1310,6 +1310,10 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_virtual_router_peering')
         g.custom_show_command('show', 'show_virtual_router_peering')
         g.custom_command('list', 'list_virtual_router_peering')
+        g.custom_command('list-learned-routes', 'list_virtual_router_peering_learned_routes', min_api='2020-06-01')
+        g.custom_command('list-advertised-routes', 'list_virtual_router_peering_advertised_routes',
+                         min_api='2020-06-01')
+
     # endregion
 
     # region Bastion

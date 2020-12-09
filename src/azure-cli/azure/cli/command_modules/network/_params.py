@@ -1933,6 +1933,8 @@ def load_arguments(self, _):
                    help='Name or ID of the virtual network gateway with ExpressRouter on which VirtualRouter is hosted.',
                    validator=validate_virtul_network_gateway)
         c.argument('hosted_subnet', help='The ID of a subnet where VirtualRouter would be deployed')
+        c.argument('allow_branch_to_branch_traffic', min_api='2020-06-01', options_list=['--b2b-traffic'],
+                   arg_type=get_three_state_flag(), help='Branch to branch traffic')
 
     with self.argument_context('network vrouter peering') as c:
         c.argument('virtual_router_name', options_list=['--vrouter-name'], help='The name of the Virtual Router.')

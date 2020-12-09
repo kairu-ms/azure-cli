@@ -6652,10 +6652,13 @@ def virtual_router_update_setter(cmd, resource_group_name, virtual_router_name, 
     return client.create_or_update(resource_group_name, virtual_router_name, parameters)
 
 
-def update_virtual_router(cmd, instance, tags=None):
+def update_virtual_router(cmd, instance, tags=None, allow_branch_to_branch_traffic=None):
     # both VirtualHub and VirtualRouter own those properties
     with cmd.update_context(instance) as c:
-        c.set_param('tags', tags)
+        if tags is not None:
+            c.set_param('tags', tags)
+        if allow_branch_to_branch_traffic is not None and hasattr(instance, 'allow_branch_to_branch_traffic'):
+            c.set_param('allow_branch_to_branch_traffic', allow_branch_to_branch_traffic)
     return instance
 
 
@@ -6812,6 +6815,42 @@ def list_virtual_router_peering(cmd, resource_group_name, virtual_router_name):
         vhub_bgp_connections = []
 
     return list(vrouter_peerings) + list(vhub_bgp_connections)
+
+
+def list_virtual_router_peering_learned_routes(cmd, resource_group_name, virtual_router_name,
+                                               peering_name, no_wait=False):
+    # try VirtualHub then if the virtual router doesn't exist
+    virtual_hub_name = virtual_router_name
+    bgp_conn_name = peering_name
+    try:
+        vhub_client = network_client_factory(cmd.cli_ctx).virtual_hubs
+        vhub_client.get(resource_group_name, virtual_hub_name)
+    except CloudError:
+        msg = 'The VirtualRouter "{}" under resource group "{}" was not found'.format(
+            virtual_hub_name, resource_group_name)
+        raise CLIError(msg)
+
+    vhub_bgp_conns_client = network_client_factory(cmd.cli_ctx).virtual_hub_bgp_connections
+    return sdk_no_wait(no_wait, vhub_bgp_conns_client.list_learned_routes, resource_group_name, virtual_hub_name,
+                       bgp_conn_name)
+
+
+def list_virtual_router_peering_advertised_routes(cmd, resource_group_name, virtual_router_name,
+                                                  peering_name, no_wait=False):
+    # try VirtualHub then if the virtual router doesn't exist
+    virtual_hub_name = virtual_router_name
+    bgp_conn_name = peering_name
+    try:
+        vhub_client = network_client_factory(cmd.cli_ctx).virtual_hubs
+        vhub_client.get(resource_group_name, virtual_hub_name)
+    except CloudError:
+        msg = 'The VirtualRouter "{}" under resource group "{}" was not found'.format(
+            virtual_hub_name, resource_group_name)
+        raise CLIError(msg)
+
+    vhub_bgp_conns_client = network_client_factory(cmd.cli_ctx).virtual_hub_bgp_connections
+    return sdk_no_wait(no_wait, vhub_bgp_conns_client.list_advertised_routes, resource_group_name, virtual_hub_name,
+                       bgp_conn_name)
 
 
 def show_virtual_router_peering(cmd, resource_group_name, virtual_router_name, peering_name):

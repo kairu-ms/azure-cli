@@ -3496,36 +3496,59 @@ class NetworkVirtualRouter(ScenarioTest):
         self.cmd('network vrouter delete -g {rg} -n {vrouter}')
 
     # @record_only()
-    @ResourceGroupPreparer(name_prefix='cli_test_virtual_router', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='cli_test_virtual_router', location='WestCentralUS')
     def test_vrouter_with_virtual_hub_support(self, resource_group, resource_group_location):
         self.kwargs.update({
-            'rg': 'test_vrouter_with_virtual_hub_support',    # the subscription needs to be a specified one given by service team
+            'vnet': self.create_random_name(prefix='vnet2', length=16),
+            'vnet_prefix1': '10.11.0.0/16',
+            'vnet_prefix2': '10.12.0.0/16',
+            'gw_subnet': 'GatewaySubnet',
+            'gw_subnet_prefix': '10.12.255.0/27',
+            'subnet': 'subnet1',
+            'subnet_prefix': '10.11.255.0/27',
+            'ip1': 'pubip1',
             'location': resource_group_location,
-            'vnet': 'vnet2',
-            'subnet1': 'subnet1',
-            'subnet2': 'subnet2',
-            'vrouter': 'vrouter2',
-            'peer': 'peer1'
+            'vrouter': self.create_random_name(prefix='vrouter2', length=16),
+            'gw1': 'gateway1',
+            'peer': 'peer1',
+
+
         })
 
         self.cmd('network vnet create -g {rg} -n {vnet} '
                  '--location {location} '
-                 '--subnet-name {subnet1} '
-                 '--address-prefix 10.0.0.0/24')
+                 '--subnet-name {gw_subnet} '
+                 '--subnet-prefix {gw_subnet_prefix} '
+                 '--address-prefix {vnet_prefix1} {vnet_prefix2} ')
 
+        self.cmd('network public-ip create -n {ip1} -g {rg}')
+
+        subnet = self.cmd('network vnet subnet create -g {rg} --vnet-name {vnet} -n {subnet} --address-prefixes {subnet_prefix}').get_output_in_json()
+        # self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --remove networkSecurityGroup')
         # a cleanup program runs in short peoridically to assign subnets a NSG within that subscription
         # which will block subnet is assigned to the virtual router
-        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet1} --remove networkSecurityGroup')
+        # self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {gw_subnet} --remove networkSecurityGroup')
         vnet = self.cmd('network vnet show -g {rg} -n {vnet}').get_output_in_json()
 
+        self.kwargs['vnet1_id'] = vnet['id']
+        self.cmd('network vnet-gateway create -g {rg} -n {gw1} --vnet {vnet1_id} --public-ip-address {ip1} --vpn-type RouteBased')
+
         self.kwargs.update({
-            'subnet1_id': vnet['subnets'][0]['id']
+            'subnet1_id': subnet['id']
         })
 
         self.cmd('network vrouter create -g {rg} -l {location} -n {vrouter} --hosted-subnet {subnet1_id}', checks=[
             self.check('type', 'Microsoft.Network/virtualHubs'),
             self.check('ipConfigurations', None),
             self.check('provisioningState', 'Succeeded')
+        ])
+
+        self.cmd('network vrouter update -n {vrouter} -g {rg} --b2b-traffic', checks=[
+            self.check('allowBranchToBranchTraffic', True)
+        ])
+
+        self.cmd('network vrouter update -n {vrouter} -g {rg} --b2b-traffic false', checks=[
+            self.check('allowBranchToBranchTraffic', False)
         ])
 
         self.cmd('network vrouter list -g {rg}')
@@ -3536,14 +3559,18 @@ class NetworkVirtualRouter(ScenarioTest):
         ])
 
         self.cmd('network vrouter peering create -g {rg} --vrouter-name {vrouter} -n {peer} '
-                 '--peer-asn 11000 --peer-ip 10.0.0.120')
+                 '--peer-asn 11000 --peer-ip 10.12.0.120')
 
         self.cmd('network vrouter peering list -g {rg} --vrouter-name {vrouter}')
 
         self.cmd('network vrouter peering show -g {rg} --vrouter-name {vrouter} -n {peer}')
 
+        self.cmd('network vrouter peering list-learned-routes -g {rg} --vrouter-name {vrouter} -n {peer}')
+
+        self.cmd('network vrouter peering list-advertised-routes -g {rg} --vrouter-name {vrouter} -n {peer}')
+
         # unable to update unless the ASN's range is required
-        # self.cmd('network vrouter peering update -g {rg} --vrouter-name {vrouter} -n {peer} --peer-ip 10.0.0.0')
+        # self.cmd('network vrouter peering update -g {rg} --vrouter-name {vrouter} -n {peer} --peer-ip 10.12.0.0')
 
         self.cmd('network vrouter peering delete -g {rg} --vrouter-name {vrouter} -n {peer}')
 
