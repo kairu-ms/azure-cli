@@ -9,74 +9,174 @@ providers:
   - id: Microsoft.Insights
     command_group: monitor
     is_preview: false
-    groups:
-      - id: AutoscaleSettings
-        command_group: autoscale-settings
+    resources:
+      - id: AutoscaleSettings # the first part of operation_id
+        operation_group: autoscale_settings
+        command_group: autoscale-settings  # it can also be ".. monitor autoscale-settings". The ".." means overwriting parent command group name
         is_preview: false
         operations:
-          - id: ListByResourceGroup
-#            command_group:
+          - id: ListBySubscription
+            command_group:
             commands:
               - list
             method: get
             version: 2015-04-01
+            profiles:
+              - latest
+            is_preview: false
+            description: |
+              Lists the autoscale settings for a subscription
+            parameters:
+              path:
+                - name: subscription_id
+                  tag: SubscriptionId
+                  type: string
+                  required: true
+                  description: |
+                    The Azure subscription Id.
+              query:
+                - name: api_version
+                  tag: ApiVersion
+                  type: string
+                  required: true
+                  description: |
+                    Client Api Version.
+          - id: ListByResourceGroup
+            command_group:
+            commands:
+              - list
+            method: get
+            version: 2015-04-01
+            profiles:
+              - latest
             is_preview: false
             description: |
               Lists the autoscale settings for a resource group
             parameters:
               path:
-                - id: ResourceGroupNameParameter
-                  name: resource_group_name
+                - name: subscription_id
+                  tag: SubscriptionId
+                  type: string
+                  required: true
+                  description: |
+                    The Azure subscription Id.
+                - name: resource_group_name
                   type: string
                   required: true
                   description: |
                     The name of the resource group.
-                - id: SubscriptionIdParameter
-                  name: subscription_id
+              query:
+                - name: api_version
+                  tag: ApiVersion
                   type: string
+                  required: true
+                  description: |
+                    Client Api Version.
+          - id: Delete
+            command_group:
+            commands:
+              - delete
+            method: delete
+            version: 2015-04-01
+            profiles:
+              - latest
+            is_preview: false
+            description: |
+              Deletes and autoscale setting
+            parameters:
+              path:
+                - name: subscription_id
+                  tag: SubscriptionId
+                  type: string
+                  required: true
                   description: |
                     The Azure subscription Id.
+                - name: resource_group_name
+                  type: string
                   required: true
+                  description: |
+                    The name of the resource group.
+                - name: autoscale_setting_name
+                  type: string
+                  required: true
+                  description: |
+                    The autoscale setting name.
               query:
-                - id: ApiVersionParameter
-                  name: api_version
+                - name: api_version
+                  tag: ApiVersion
+                  type: string
+                  required: true
+                  description: |
+                    Client Api Version.
+          - id: Get
+            command_group:
+            commands:
+              - show
+            method: get
+            version: 2015-04-01
+            profiles:
+              - latest
+            is_preview: false
+            description: |
+              Gets an autoscale setting
+            parameters:
+              path:
+                - name: subscription_id
+                  tag: SubscriptionId
+                  type: string
+                  required: true
+                  description: |
+                    The Azure subscription Id.
+                - name: resource_group_name
+                  type: string
+                  required: true
+                  description: |
+                    The name of the resource group.
+                - name: autoscale_setting_name
+                  type: string
+                  required: true
+                  description: |
+                    The autoscale setting name.
+              query:
+                - name: api_version
+                  tag: ApiVersion
                   type: string
                   required: true
                   description: |
                     Client Api Version.
           - id: CreateOrUpdate
-#            command_group:
+            command_group:
             commands:
               - create
               - update
             method: put
             version: 2015-04-01
+            profiles:
+              - latest
             is_preview: false
             description: |
               Creates or updates an autoscale setting
             parameters:
               path:
-                - id: ResourceGroupNameParameter
-                  name: resource_group_name
+                - name: subscription_id
+                  tag: SubscriptionId
+                  type: string
+                  required: true
+                  description: |
+                    The Azure subscription Id.
+                - name: resource_group_name
                   type: string
                   required: true
                   description: |
                     The name of the resource group.
-                - id: AutoscaleSettingNameParameter
-                  name: autoscale_setting_name
+                - name: autoscale_setting_name
                   type: string
                   required: true
                   description: |
                     The autoscale setting name.
-                - id: SubscriptionIdParameter
-                  name: subscription_id
-                  type: string
-                  description: |
-                    The Azure subscription Id.
-                  required: true
               query:
-                - id: ApiVersionParameter
-                  name: api_version
+                - name: api_version
+                  tag: ApiVersion
                   type: string
                   required: true
                   description: |
@@ -85,503 +185,751 @@ providers:
                 - name: parameters
                   required: true
                   description: |
-                    Parameters supplied to the operation.
-
-          - id: Delete
-#            command_group:
-            commands:
-              - delete
-            method: delete
-            version: 2015-04-01
-            is_preview: false
-            description: |
-              Deletes and autoscale setting
-          - id: Get
-#            command_group:
-            commands:
-              - show
-            method: get
-            version: 2015-04-01
-            is_preview: false
-            description: |
-              Gets an autoscale setting
+                    The autoscale setting resource.
+                  type: object
+                  properties:
+                    - name: location
+                      description: |
+                        Resource location
+                      required: true
+                      type: string
+                      x-ms-mutability:
+                        - create
+                        - read
+                    - name: tags
+                      desciption: |
+                        Resource tags
+                      additionalProperties:
+                        type: string
+                    - name: enabled
+                      description: |
+                        the enabled flag. Specifies whether automatic scaling is enabled for the resource. The default value is 'true'
+                      type: boolean
+                      default: true
+                    - name: name
+                      description: |
+                        the name of the autoscale setting.
+                      type: string
+                    - name: target_resource_uri
+                      description: |
+                        the resource identifier of the resource that the autoscale setting should be added to.
+                      type: string
+                    - name: profiles
+                      description: |
+                        the collection of automatic scaling profiles that specify different scaling parameters for different time periods. A maximum of 20 profiles can be specified.
+                      type: array
+                      maxItems: 20
+                      required: true
+                      items:
+                        type: object
+                        description: |
+                          Autoscale profile.
+                        properties:
+                          - name: name
+                            description: |
+                              the name of the profile.
+                            type: string
+                            required: true
+                          - name: capacity
+                            description: |
+                              the number of instances that can be used during this profile.
+                            type: object
+                            required: true
+                            properties:
+                              - name: minimum
+                                description: |
+                                  the minimum number of instances for the resource.
+                                type: string
+                                required: true
+                              - name: maximum
+                                description: |
+                                  the maximum number of instances for the resource. The actual maximum number of instances is limited by the cores that are available in the subscription.
+                                type: string
+                                required: true
+                              - name: default
+                                description: |
+                                  the number of instances that will be set if metrics are not available for evaluation. The default is only used if the current instance count is lower than the default.
+                                type: string
+                                required: true
+                          - name: rules
+                            description: |
+                              the collection of rules that provide the triggers and parameters for the scaling action. A maximum of 10 rules can be specified.
+                            type: array
+                            required: true
+                            items:
+                              type: object
+                              description: |
+                                A rule that provide the triggers and parameters for the scaling action.
+                              properties:
+                                - name: metric_trigger
+                                  description: |
+                                    the trigger that results in a scaling action.
+                                  type: object
+                                  required: true
+                                  properties:
+                                    - name: metric_name
+                                      description: |
+                                        the name of the metric that defines what the rule monitors.
+                                      type: string
+                                      required: true
+                                    - name: metric_namespace
+                                      description: |
+                                        the namespace of the metric that defines what the rule monitors.
+                                      type: string
+                                    - name: metric_resource_uri
+                                      description: |
+                                        the resource identifier of the resource the rule monitors.
+                                      type: string
+                                      required: true
+                                    - name: time_grain
+                                      description: |
+                                        the granularity of metrics the rule monitors. Must be one of the predefined values returned from metric definitions for the metric. Must be between 12 hours and 1 minute.
+                                      type: string
+                                      format: duration
+                                      required: true
+                                    - name: statistic
+                                      description: |
+                                        the metric statistic type. How the metrics from multiple instances are combined.
+                                      type: string
+                                      required: true
+                                      enum:
+                                        name: MetricStatisticType
+                                        modelAsString: false
+                                        values:
+                                          - Average
+                                          - Min
+                                          - Max
+                                          - Sum
+                                    - name: time_window
+                                      description: |
+                                        the range of time in which instance data is collected. This value must be greater than the delay in metric collection, which can vary from resource-to-resource. Must be between 12 hours and 5 minutes.
+                                      type: string
+                                      format: duration
+                                      required: true
+                                    - name: time_aggregation
+                                      description: |
+                                        time aggregation type. How the data that is collected should be combined over time. The default value is Average.
+                                      type: string
+                                      required: true
+                                      enum:
+                                        name: TimeAggregationType
+                                        modelAsString: false
+                                        values:
+                                          - Average
+                                          - Minimum
+                                          - Maximum
+                                          - Total
+                                          - Count
+                                          - Last
+                                    - name: operator
+                                      description: |
+                                        the operator that is used to compare the metric data and the threshold.
+                                      type: string
+                                      required: true
+                                      enum:
+                                        name: ComparisonOperationType
+                                        values:
+                                          - Equals
+                                          - NotEquals
+                                          - GreaterThan
+                                          - GreaterThanOrEqual
+                                          - LessThan
+                                          - LessThanOrEqual
+                                    - name: threshold
+                                      description: |
+                                        the threshold of the metric that triggers the scale action.
+                                      type: number
+                                      format: double
+                                      required: true
+                                    - name: dimensions
+                                      description: |
+                                        List of dimension conditions. For example: [{\"DimensionName\":\"AppName\",\"Operator\":\"Equals\",\"Values\":[\"App1\"]},{\"DimensionName\":\"Deployment\",\"Operator\":\"Equals\",\"Values\":[\"default\"]}].
+                                      type: array
+                                      items:
+                                        type: object
+                                        description: |
+                                          Specifies an auto scale rule metric dimension.
+                                        properties:
+                                          - name: dimension_name
+                                            description: |
+                                              Name of the dimension.
+                                            type: string
+                                            required: true
+                                          - name: operator
+                                            description: |
+                                              the dimension operator. Only 'Equals' and 'NotEquals' are supported. 'Equals' being equal to any of the values. 'NotEquals' being not equal to all of the values
+                                            type: string
+                                            required: true
+                                            enum:
+                                              name: ScaleRuleMetricDimensionOperationType
+                                              modelAsString: true
+                                              values:
+                                                - Equals
+                                                - NotEquals
+                                          - name: values
+                                            description: |
+                                              list of dimension values. For example: ["App1","App2"].
+                                            type: array
+                                            required: true
+                                            items:
+                                              type: string
+                                - name: scale_action
+                                  description: |
+                                    the parameters for the scaling action.
+                                  type: object
+                                  required: true
+                                  properties:
+                                    - name: direction
+                                      description: |
+                                        the scale direction. Whether the scaling action increases or decreases the number of instances.
+                                      type: string
+                                      required: true
+                                      enum:
+                                        name: ScaleDirection
+                                        modelAsString: false
+                                        values:
+                                          - None
+                                          - Increase
+                                          - Decrease
+                                    - name: type
+                                      description: |
+                                        the type of action that should occur when the scale rule fires.
+                                      type: string
+                                      required: true
+                                      enum:
+                                        name: ScaleType
+                                        modelAsString: false
+                                        values:
+                                          - ChangeCount
+                                          - PercentChangeCount
+                                          - ExactCount
+                                    - name: value
+                                      description: |
+                                        the number of instances that are involved in the scaling action. This value must be 1 or greater. The default value is 1.
+                                      type: string
+                                      default: 1
+                                    - name: cooldown
+                                      description: |
+                                        the amount of time to wait since the last scaling action before this action occurs. It must be between 1 week and 1 minute in ISO 8601 format.
+                                      type: string
+                                      format: duration
+                                      required: true
+                          - name: fixed_date
+                            description: |
+                              the specific date-time for the profile. This element is not used if the Recurrence element is used.
+                            properties:
+                              - name: time_zone
+                                description: |
+                                  the timezone of the start and end times for the profile. Some examples of valid time zones are: Dateline Standard Time, UTC-11, Hawaiian Standard Time, Alaskan Standard Time, Pacific Standard Time (Mexico), Pacific Standard Time, US Mountain Standard Time, Mountain Standard Time (Mexico), Mountain Standard Time, Central America Standard Time, Central Standard Time, Central Standard Time (Mexico), Canada Central Standard Time, SA Pacific Standard Time, Eastern Standard Time, US Eastern Standard Time, Venezuela Standard Time, Paraguay Standard Time, Atlantic Standard Time, Central Brazilian Standard Time, SA Western Standard Time, Pacific SA Standard Time, Newfoundland Standard Time, E. South America Standard Time, Argentina Standard Time, SA Eastern Standard Time, Greenland Standard Time, Montevideo Standard Time, Bahia Standard Time, UTC-02, Mid-Atlantic Standard Time, Azores Standard Time, Cape Verde Standard Time, Morocco Standard Time, UTC, GMT Standard Time, Greenwich Standard Time, W. Europe Standard Time, Central Europe Standard Time, Romance Standard Time, Central European Standard Time, W. Central Africa Standard Time, Namibia Standard Time, Jordan Standard Time, GTB Standard Time, Middle East Standard Time, Egypt Standard Time, Syria Standard Time, E. Europe Standard Time, South Africa Standard Time, FLE Standard Time, Turkey Standard Time, Israel Standard Time, Kaliningrad Standard Time, Libya Standard Time, Arabic Standard Time, Arab Standard Time, Belarus Standard Time, Russian Standard Time, E. Africa Standard Time, Iran Standard Time, Arabian Standard Time, Azerbaijan Standard Time, Russia Time Zone 3, Mauritius Standard Time, Georgian Standard Time, Caucasus Standard Time, Afghanistan Standard Time, West Asia Standard Time, Ekaterinburg Standard Time, Pakistan Standard Time, India Standard Time, Sri Lanka Standard Time, Nepal Standard Time, Central Asia Standard Time, Bangladesh Standard Time, N. Central Asia Standard Time, Myanmar Standard Time, SE Asia Standard Time, North Asia Standard Time, China Standard Time, North Asia East Standard Time, Singapore Standard Time, W. Australia Standard Time, Taipei Standard Time, Ulaanbaatar Standard Time, Tokyo Standard Time, Korea Standard Time, Yakutsk Standard Time, Cen. Australia Standard Time, AUS Central Standard Time, E. Australia Standard Time, AUS Eastern Standard Time, West Pacific Standard Time, Tasmania Standard Time, Magadan Standard Time, Vladivostok Standard Time, Russia Time Zone 10, Central Pacific Standard Time, Russia Time Zone 11, New Zealand Standard Time, UTC+12, Fiji Standard Time, Kamchatka Standard Time, Tonga Standard Time, Samoa Standard Time, Line Islands Standard Time
+                                type: string
+                              - name: start
+                                decription: |
+                                  the start time for the profile in ISO 8601 format.
+                                type: string
+                                format: date-time
+                                required: true
+                              - name: end
+                                description: |
+                                  the end time for the profile in ISO 8601 format.
+                                type: string
+                                format: date-time
+                                required: true
+                          - name: recurrence
+                            description: |
+                              the repeating times at which this profile begins. This element is not used if the FixedDate element is used.
+                            type: object
+                            properties:
+                              - name: frequency
+                                description: |
+                                  the recurrence frequency. How often the schedule profile should take effect. This value must be Week, meaning each week will have the same set of profiles. For example, to set a daily schedule, set **schedule** to every day of the week. The frequency property specifies that the schedule is repeated weekly.
+                                type: string
+                                required: true
+                                enum:
+                                  name: RecurrenceFrequency
+                                  modelAsString: false
+                                  values:
+                                    - None
+                                    - Second
+                                    - Minute
+                                    - Hour
+                                    - Day
+                                    - Week
+                                    - Month
+                                    - Year
+                              - name: schedule
+                                description: |
+                                  the scheduling constraints for when the profile begins.
+                                type: object
+                                required: true
+                                properties:
+                                  - name: time_zone
+                                    description: |
+                                      the timezone of the start and end times for the profile. Some examples of valid time zones are: Dateline Standard Time, UTC-11, Hawaiian Standard Time, Alaskan Standard Time, Pacific Standard Time (Mexico), Pacific Standard Time, US Mountain Standard Time, Mountain Standard Time (Mexico), Mountain Standard Time, Central America Standard Time, Central Standard Time, Central Standard Time (Mexico), Canada Central Standard Time, SA Pacific Standard Time, Eastern Standard Time, US Eastern Standard Time, Venezuela Standard Time, Paraguay Standard Time, Atlantic Standard Time, Central Brazilian Standard Time, SA Western Standard Time, Pacific SA Standard Time, Newfoundland Standard Time, E. South America Standard Time, Argentina Standard Time, SA Eastern Standard Time, Greenland Standard Time, Montevideo Standard Time, Bahia Standard Time, UTC-02, Mid-Atlantic Standard Time, Azores Standard Time, Cape Verde Standard Time, Morocco Standard Time, UTC, GMT Standard Time, Greenwich Standard Time, W. Europe Standard Time, Central Europe Standard Time, Romance Standard Time, Central European Standard Time, W. Central Africa Standard Time, Namibia Standard Time, Jordan Standard Time, GTB Standard Time, Middle East Standard Time, Egypt Standard Time, Syria Standard Time, E. Europe Standard Time, South Africa Standard Time, FLE Standard Time, Turkey Standard Time, Israel Standard Time, Kaliningrad Standard Time, Libya Standard Time, Arabic Standard Time, Arab Standard Time, Belarus Standard Time, Russian Standard Time, E. Africa Standard Time, Iran Standard Time, Arabian Standard Time, Azerbaijan Standard Time, Russia Time Zone 3, Mauritius Standard Time, Georgian Standard Time, Caucasus Standard Time, Afghanistan Standard Time, West Asia Standard Time, Ekaterinburg Standard Time, Pakistan Standard Time, India Standard Time, Sri Lanka Standard Time, Nepal Standard Time, Central Asia Standard Time, Bangladesh Standard Time, N. Central Asia Standard Time, Myanmar Standard Time, SE Asia Standard Time, North Asia Standard Time, China Standard Time, North Asia East Standard Time, Singapore Standard Time, W. Australia Standard Time, Taipei Standard Time, Ulaanbaatar Standard Time, Tokyo Standard Time, Korea Standard Time, Yakutsk Standard Time, Cen. Australia Standard Time, AUS Central Standard Time, E. Australia Standard Time, AUS Eastern Standard Time, West Pacific Standard Time, Tasmania Standard Time, Magadan Standard Time, Vladivostok Standard Time, Russia Time Zone 10, Central Pacific Standard Time, Russia Time Zone 11, New Zealand Standard Time, UTC+12, Fiji Standard Time, Kamchatka Standard Time, Tonga Standard Time, Samoa Standard Time, Line Islands Standard Time
+                                    type: string
+                                    required: true
+                                  - name: days
+                                    description: |
+                                      the collection of days that the profile takes effect on. Possible values are Sunday through Saturday.
+                                    type: array
+                                    required: true
+                                    items:
+                                      type: string
+                                  - name: hours
+                                    description: |
+                                      A collection of hours that the profile takes effect on. Values supported are 0 to 23 on the 24-hour clock (AM/PM times are not supported).
+                                    type: array
+                                    required: true
+                                    items:
+                                      type: integer
+                                      format: int32
+                                  - name: minutes
+                                    description: |
+                                      A collection of minutes at which the profile takes effect at.
+                                    type: array
+                                    required: true
+                                    items:
+                                      type: integer
+                                      format: int32
+                    - name: notifications
+                      description: |
+                        the collection of notifications.
+                      type: array
+                      items:
+                        type: object
+                        description: |
+                          Autoscale notification.
+                        properties:
+                          - name: operation
+                            description: |
+                              the operation associated with the notification and its value must be "scale"
+                            type: string
+                            required: true
+                            enum:
+                              name: OperationType
+                              modelAsString: false
+                              values:
+                                - Scale
+                          - name: email
+                            description: |
+                              the email notification.
+                            type: object
+                            properties:
+                              - name: send_to_subscription_administrator
+                                description: |
+                                  a value indicating whether to send email to subscription administrator.
+                                type: boolean
+                              - name: send_to_subscription_co_administrators
+                                description: |
+                                  a value indicating whether to send email to subscription co-administrators.
+                                type: boolean
+                              - name: custom_emails
+                                description: |
+                                  the custom e-mails list. This value can be null or empty, in which case this attribute will be ignored.
+                                type: array
+                                items:
+                                  type: string
+                          - name: webhooks
+                            description: |
+                              the collection of webhook notifications.
+                            type: object
+                            properties:
+                              - name: service_uri
+                                description: |
+                                  the service address to receive the notification.
+                                type: string
+                              - name: properties
+                                description: |
+                                  a property bag of settings. This value can be empty.
+                                type: object
+                                additionalProperties:
+                                  type: string
           - id: Update
-#            command_group:
+            command_group:
             commands:
               - update
             method: patch
             version: 2015-04-01
+            profiles:
+              - latest
             is_preview: false
             description: |
               Updates an existing AutoscaleSettingsResource. To update other fields use the CreateOrUpdate method.
-          - id: ListBySubscription
-#            command_group:
-            commands:
-              - list
-            method: get
-            version: 2015-04-01
-            is_preview: false
-            description: |
-              Lists the autoscale settings for a subscription
-
-definitions:
-  - id: Resource
-    description: |
-      An azure resource object
-    x-ms-azure-resource: true
-    properties:
-      - name: id
-        description: |
-          Azure resource Id
-        type: string
-        readOnly: true
-      - name: name
-        description: |
-          Azure resource name
-        type: string
-        readOnly: true
-      - name: type
-        description: |
-          Azure resource type
-        type: string
-        readOnly: true
-      - name: location
-        description: |
-          Resource location
-        required: true
-        x-ms-mutability:
-          - create
-          - read
-      - name: tags
-        desciption: |
-          Resource tags
-        additionalProperties:
-          type: string
-  - id: ScaleCapacity
-    description: |
-      The number of instances that can be used during this profile.
-    properties:
-      - name: minimum
-        description: |
-          the minimum number of instances for the resource.
-        type: string
-        required: true
-      - name: maximum
-        description: |
-          the maximum number of instances for the resource. The actual maximum number of instances is limited by the cores that are available in the subscription.
-        type: string
-        required: true
-      - name: default
-        description: |
-          the number of instances that will be set if metrics are not available for evaluation. The default is only used if the current instance count is lower than the default.
-        type: string
-        required: true
-  - id: MetricTrigger
-    description: |
-      The trigger that results in a scaling action.
-    properties:
-      - name: metricName
-        description: |
-          the name of the metric that defines what the rule monitors.
-        type: string
-        required: true
-      - name: metricNamespace
-        description: |
-          the namespace of the metric that defines what the rule monitors.
-        type: string
-      - name: metricResourceUri
-        description: |
-          the resource identifier of the resource the rule monitors.
-        type: string
-        required: true
-      - name: timeGrain
-        description: |
-          the granularity of metrics the rule monitors. Must be one of the predefined values returned from metric definitions for the metric. Must be between 12 hours and 1 minute.
-        type: string
-        format: duration
-        required: true
-      - name: statistic
-        description: |
-          the metric statistic type. How the metrics from multiple instances are combined.
-        type: string
-        required: true
-        enum:
-          name: MetricStatisticType
-          modelAsString: false
-          values:
-            - Average
-            - Min
-            - Max
-            - Sum
-      - name: timeWindow
-        description: |
-          the range of time in which instance data is collected. This value must be greater than the delay in metric collection, which can vary from resource-to-resource. Must be between 12 hours and 5 minutes.
-        type: string
-        format: duration
-        required: true
-      - name: timeAggregation
-        description: |
-          time aggregation type. How the data that is collected should be combined over time. The default value is Average.
-        type: string
-        required: true
-        enum:
-          name: TimeAggregationType
-          modelAsString: false
-          values:
-            - Average
-            - Minimum
-            - Maximum
-            - Total
-            - Count
-            - Last
-      - name: operator
-        description: |
-          the operator that is used to compare the metric data and the threshold.
-        type: string
-        required: true
-        enum:
-          name: ComparisonOperationType
-          values:
-            - Equals
-            - NotEquals
-            - GreaterThan
-            - GreaterThanOrEqual
-            - LessThan
-            - LessThanOrEqual
-      - name: threshold
-        description: |
-          the threshold of the metric that triggers the scale action.
-        type: number
-        format: double
-        required: true
-      - name: dimensions
-        description: |
-          List of dimension conditions. For example: [{\"DimensionName\":\"AppName\",\"Operator\":\"Equals\",\"Values\":[\"App1\"]},{\"DimensionName\":\"Deployment\",\"Operator\":\"Equals\",\"Values\":[\"default\"]}].
-        type: array
-        items:
-          type: definitions.ScaleRuleMetricDimension
-  - id: ScaleAction
-    description: |
-      The parameters for the scaling action.
-    properties:
-      - name: direction
-        description: |
-          the scale direction. Whether the scaling action increases or decreases the number of instances.
-        type: string
-        required: true
-        enum:
-          name: ScaleDirection
-          modelAsString: false
-          values:
-            - None
-            - Increase
-            - Decrease
-      - name: type
-        description: |
-          the type of action that should occur when the scale rule fires.
-        type: string
-        required: true
-        enum:
-          name: ScaleType
-          modelAsString: false
-          values:
-            - ChangeCount
-            - PercentChangeCount
-            - ExactCount
-      - name: value
-        description: |
-          the number of instances that are involved in the scaling action. This value must be 1 or greater. The default value is 1.
-        type: string
-        default: 1
-      - name: cooldown
-        description: |
-          the amount of time to wait since the last scaling action before this action occurs. It must be between 1 week and 1 minute in ISO 8601 format.
-        type: string
-        format: duration
-        required: true
-  - id: ScaleRule
-    description: |
-      A rule that provide the triggers and parameters for the scaling action.
-    properties:
-      - name: metricTrigger
-        description: |
-          the trigger that results in a scaling action.
-        type: definitions.MetricTrigger
-        required: true
-      - name: scaleAction
-        description: |
-          the parameters for the scaling action.
-        type: definitions.ScaleAction
-        required: true
-  - id: TimeWindow
-    description: |
-      A specific date-time for the profile
-    properties:
-      - name: timeZone
-        description: |
-          the timezone of the start and end times for the profile. Some examples of valid time zones are: Dateline Standard Time, UTC-11, Hawaiian Standard Time, Alaskan Standard Time, Pacific Standard Time (Mexico), Pacific Standard Time, US Mountain Standard Time, Mountain Standard Time (Mexico), Mountain Standard Time, Central America Standard Time, Central Standard Time, Central Standard Time (Mexico), Canada Central Standard Time, SA Pacific Standard Time, Eastern Standard Time, US Eastern Standard Time, Venezuela Standard Time, Paraguay Standard Time, Atlantic Standard Time, Central Brazilian Standard Time, SA Western Standard Time, Pacific SA Standard Time, Newfoundland Standard Time, E. South America Standard Time, Argentina Standard Time, SA Eastern Standard Time, Greenland Standard Time, Montevideo Standard Time, Bahia Standard Time, UTC-02, Mid-Atlantic Standard Time, Azores Standard Time, Cape Verde Standard Time, Morocco Standard Time, UTC, GMT Standard Time, Greenwich Standard Time, W. Europe Standard Time, Central Europe Standard Time, Romance Standard Time, Central European Standard Time, W. Central Africa Standard Time, Namibia Standard Time, Jordan Standard Time, GTB Standard Time, Middle East Standard Time, Egypt Standard Time, Syria Standard Time, E. Europe Standard Time, South Africa Standard Time, FLE Standard Time, Turkey Standard Time, Israel Standard Time, Kaliningrad Standard Time, Libya Standard Time, Arabic Standard Time, Arab Standard Time, Belarus Standard Time, Russian Standard Time, E. Africa Standard Time, Iran Standard Time, Arabian Standard Time, Azerbaijan Standard Time, Russia Time Zone 3, Mauritius Standard Time, Georgian Standard Time, Caucasus Standard Time, Afghanistan Standard Time, West Asia Standard Time, Ekaterinburg Standard Time, Pakistan Standard Time, India Standard Time, Sri Lanka Standard Time, Nepal Standard Time, Central Asia Standard Time, Bangladesh Standard Time, N. Central Asia Standard Time, Myanmar Standard Time, SE Asia Standard Time, North Asia Standard Time, China Standard Time, North Asia East Standard Time, Singapore Standard Time, W. Australia Standard Time, Taipei Standard Time, Ulaanbaatar Standard Time, Tokyo Standard Time, Korea Standard Time, Yakutsk Standard Time, Cen. Australia Standard Time, AUS Central Standard Time, E. Australia Standard Time, AUS Eastern Standard Time, West Pacific Standard Time, Tasmania Standard Time, Magadan Standard Time, Vladivostok Standard Time, Russia Time Zone 10, Central Pacific Standard Time, Russia Time Zone 11, New Zealand Standard Time, UTC+12, Fiji Standard Time, Kamchatka Standard Time, Tonga Standard Time, Samoa Standard Time, Line Islands Standard Time
-        type: string
-      - name: start
-        decription: |
-          the start time for the profile in ISO 8601 format.
-        type: string
-        format: date-time
-        required: true
-      - name: end
-        description: |
-          the end time for the profile in ISO 8601 format.
-        type: string
-        format: date-time
-        required: true
-  - id: RecurrentSchedule
-    description: |
-      The scheduling constraints for when the profile begins.
-    properties:
-      - name: timeZone
-        description: |
-          the timezone of the start and end times for the profile. Some examples of valid time zones are: Dateline Standard Time, UTC-11, Hawaiian Standard Time, Alaskan Standard Time, Pacific Standard Time (Mexico), Pacific Standard Time, US Mountain Standard Time, Mountain Standard Time (Mexico), Mountain Standard Time, Central America Standard Time, Central Standard Time, Central Standard Time (Mexico), Canada Central Standard Time, SA Pacific Standard Time, Eastern Standard Time, US Eastern Standard Time, Venezuela Standard Time, Paraguay Standard Time, Atlantic Standard Time, Central Brazilian Standard Time, SA Western Standard Time, Pacific SA Standard Time, Newfoundland Standard Time, E. South America Standard Time, Argentina Standard Time, SA Eastern Standard Time, Greenland Standard Time, Montevideo Standard Time, Bahia Standard Time, UTC-02, Mid-Atlantic Standard Time, Azores Standard Time, Cape Verde Standard Time, Morocco Standard Time, UTC, GMT Standard Time, Greenwich Standard Time, W. Europe Standard Time, Central Europe Standard Time, Romance Standard Time, Central European Standard Time, W. Central Africa Standard Time, Namibia Standard Time, Jordan Standard Time, GTB Standard Time, Middle East Standard Time, Egypt Standard Time, Syria Standard Time, E. Europe Standard Time, South Africa Standard Time, FLE Standard Time, Turkey Standard Time, Israel Standard Time, Kaliningrad Standard Time, Libya Standard Time, Arabic Standard Time, Arab Standard Time, Belarus Standard Time, Russian Standard Time, E. Africa Standard Time, Iran Standard Time, Arabian Standard Time, Azerbaijan Standard Time, Russia Time Zone 3, Mauritius Standard Time, Georgian Standard Time, Caucasus Standard Time, Afghanistan Standard Time, West Asia Standard Time, Ekaterinburg Standard Time, Pakistan Standard Time, India Standard Time, Sri Lanka Standard Time, Nepal Standard Time, Central Asia Standard Time, Bangladesh Standard Time, N. Central Asia Standard Time, Myanmar Standard Time, SE Asia Standard Time, North Asia Standard Time, China Standard Time, North Asia East Standard Time, Singapore Standard Time, W. Australia Standard Time, Taipei Standard Time, Ulaanbaatar Standard Time, Tokyo Standard Time, Korea Standard Time, Yakutsk Standard Time, Cen. Australia Standard Time, AUS Central Standard Time, E. Australia Standard Time, AUS Eastern Standard Time, West Pacific Standard Time, Tasmania Standard Time, Magadan Standard Time, Vladivostok Standard Time, Russia Time Zone 10, Central Pacific Standard Time, Russia Time Zone 11, New Zealand Standard Time, UTC+12, Fiji Standard Time, Kamchatka Standard Time, Tonga Standard Time, Samoa Standard Time, Line Islands Standard Time
-        type: string
-        required: true
-      - name: days
-        description: |
-          the collection of days that the profile takes effect on. Possible values are Sunday through Saturday.
-        type: array
-        required: true
-        items:
-          type: string
-      - name: hours
-        description: |
-          A collection of hours that the profile takes effect on. Values supported are 0 to 23 on the 24-hour clock (AM/PM times are not supported).
-        type: array
-        required: true
-        items:
-          type: integer
-          format: int32
-      - name: minutes
-        description: |
-          A collection of minutes at which the profile takes effect at.
-        type: array
-        required: true
-        items:
-          type: integer
-          format: int32
-  - id: Recurrence
-    description: |
-      The repeating times at which this profile begins. This element is not used if the FixedDate element is used.
-    properties:
-      - name: frequency
-        description: |
-          the recurrence frequency. How often the schedule profile should take effect. This value must be Week, meaning each week will have the same set of profiles. For example, to set a daily schedule, set **schedule** to every day of the week. The frequency property specifies that the schedule is repeated weekly.
-        type: string
-        required: true
-        enum:
-          name: RecurrenceFrequency
-          modelAsString: false
-          values:
-            - None
-            - Second
-            - Minute
-            - Hour
-            - Day
-            - Week
-            - Month
-            - Year
-      - name: schedule
-        description: |
-          the scheduling constraints for when the profile begins.
-        type: definitions.RecurrentSchedule
-        required: true
-  - id: AutoscaleProfile
-    description: |
-      Autoscale profile.
-    properties:
-      - name: name
-        description: |
-          the name of the profile.
-        type: string
-        required: true
-      - name: capacity
-        description: |
-          the number of instances that can be used during this profile.
-        type: definitions.ScaleCapacity
-        required: true
-      - name: rules
-        description: |
-          the collection of rules that provide the triggers and parameters for the scaling action. A maximum of 10 rules can be specified.
-        type: array
-        required: true
-        items:
-          type: definitions.ScaleRule
-      - name: fixedDate
-        description: |
-          the specific date-time for the profile. This element is not used if the Recurrence element is used.
-        type: definitions.TimeWindow
-      - name: recurrence
-        description: |
-          the repeating times at which this profile begins. This element is not used if the FixedDate element is used.
-        type: definitions.Recurrence
-  - id: EmailNotification
-    description: |
-      Email notification of an autoscale event.
-    properties:
-      - name: sendToSubscriptionAdministrator
-        description: |
-          a value indicating whether to send email to subscription administrator.
-        type: boolean
-      - name: sendToSubscriptionCoAdministrators
-        description: |
-          a value indicating whether to send email to subscription co-administrators.
-        type: boolean
-      - name: customEmails
-        description: |
-          the custom e-mails list. This value can be null or empty, in which case this attribute will be ignored.
-        type: array
-        items:
-          type: string
-  - id: WebhookNotification
-    description: |
-      Webhook notification of an autoscale event.
-    properties:
-      - name: serviceUri
-        description: |
-          the service address to receive the notification.
-        type: string
-      - name: properties
-        description: |
-          a property bag of settings. This value can be empty.
-        type: object
-        additionalProperties:
-          type: string
-  - id: AutoscaleNotification
-    description: |
-      Autoscale notification.
-    properties:
-      - name: operation
-        description: |
-          the operation associated with the notification and its value must be "scale"
-        type: string
-        required: true
-        enum:
-          name: OperationType
-          modelAsString: false
-          values:
-            - Scale
-      - name: email
-        description: |
-          the email notification.
-        type: definations.EmailNotification
-      - name: webhooks
-        description: |
-          the collection of webhook notifications.
-        type: definations.WebhookNotification
-  - id: AutoscaleSetting
-    description: |
-      A setting that contains all of the configuration for the automatic scaling of a resource.
-    properties:
-      - name: profiles
-        description: |
-          the collection of automatic scaling profiles that specify different scaling parameters for different time periods. A maximum of 20 profiles can be specified.
-        type: array
-        maxItems: 20
-        required: true
-        items:
-          type: definitions.AutoscaleProfile
-      - name: notifications
-        description: |
-          the collection of notifications.
-        type: array
-        items:
-          type: definitions.AutoscaleNotification
-      - name: enabled
-        description: |
-          the enabled flag. Specifies whether automatic scaling is enabled for the resource. The default value is 'true'
-        type: boolean
-        default: true
-      - name: name
-        description: |
-          the name of the autoscale setting.
-        type: string
-      - name: targetResourceUri
-        description: |
-          the resource identifier of the resource that the autoscale setting should be added to.
-        type: string
-  - id: AutoscaleSettingResource
-    description: |
-      The autoscale setting resource.
-    allOf:
-      - definitions.Resource
-    properties:
-      - name: properties
-        x-ms-client-flatten: true
-        description: |
-          The autoscale setting of the resource.
-        type: definitions.AutoscaleSetting
-        required: true
-  - id: AutoscaleSettingResourcePatch
-    description: |
-      The autoscale setting object for patch operations.
-    properties:
-      - name: properties
-        x-ms-client-flatten: true
-        description: |
-          The autoscale setting properties of the update operation.
-        type: definitions.AutoscaleSetting
-      - name: tags
-        description: |
-          Resource tags
-        additionalProperties:
-          type: string
-  - id: AutoscaleSettingResourceCollection
-    description: |
-      Represents a collection of autoscale setting resources.
-    properties:
-      - name: value
-        description: |
-          the values for the autoscale setting resources.
-        type: array
-        required: true
-        items:
-          type: definitions.AutoscaleSettingResource
-      - name: nextLink
-        description: |
-          URL to get the next set of results.
-        type: string
-  - id: ErrorResponse
-    description: |
-      Describes the format of Error response.
-    properties:
-      - name: code
-        description: |
-          Error code
-        type: string
-      - name: message
-        description: |
-          Error message indicating why the operation failed.
-        type: string
-  - id: ScaleRuleMetricDimension
-    description: |
-      Specifies an auto scale rule metric dimension.
-    properties:
-      - name: DimensionName
-        description: |
-          Name of the dimension.
-        type: string
-        required: true
-      - name: Operator
-        description: |
-          the dimension operator. Only 'Equals' and 'NotEquals' are supported. 'Equals' being equal to any of the values. 'NotEquals' being not equal to all of the values
-        type: string
-        required: true
-        enum:
-          name: ScaleRuleMetricDimensionOperationType
-          modelAsString: true
-          values:
-            - Equals
-            - NotEquals
-      - name: Values
-        description: |
-          list of dimension values. For example: ["App1","App2"].
-        type: array
-        required: true
-        items:
-          type: string
+            parameters:
+              path:
+                - name: subscription_id
+                  tag: SubscriptionId
+                  type: string
+                  required: true
+                  description: |
+                    The Azure subscription Id.
+                - name: resource_group_name
+                  type: string
+                  required: true
+                  description: |
+                    The name of the resource group.
+                - name: autoscale_setting_name
+                  type: string
+                  required: true
+                  description: |
+                    The autoscale setting name.
+              query:
+                - name: api_version
+                  tag: ApiVersion
+                  type: string
+                  required: true
+                  description: |
+                    Client Api Version.
+              body:
+                - name: autoscale_setting_resource
+                  type: object
+                  required: true
+                  description: |
+                    Parameters supplied to the operation.
+                  properties:
+                    - name: tags
+                      desciption: |
+                        Resource tags
+                      additionalProperties:
+                        type: string
+                    - name: enabled
+                      description: |
+                        the enabled flag. Specifies whether automatic scaling is enabled for the resource. The default value is 'true'
+                      type: boolean
+                      default: true
+                    - name: name
+                      description: |
+                        the name of the autoscale setting.
+                      type: string
+                    - name: target_resource_uri
+                      description: |
+                        the resource identifier of the resource that the autoscale setting should be added to.
+                      type: string
+                    - name: profiles
+                      description: |
+                        the collection of automatic scaling profiles that specify different scaling parameters for different time periods. A maximum of 20 profiles can be specified.
+                      type: array
+                      maxItems: 20
+                      required: true
+                      items:
+                        type: object
+                        description: |
+                          Autoscale profile.
+                        properties:
+                          - name: name
+                            description: |
+                              the name of the profile.
+                            type: string
+                            required: true
+                          - name: capacity
+                            description: |
+                              the number of instances that can be used during this profile.
+                            type: object
+                            required: true
+                            properties:
+                              - name: minimum
+                                description: |
+                                  the minimum number of instances for the resource.
+                                type: string
+                                required: true
+                              - name: maximum
+                                description: |
+                                  the maximum number of instances for the resource. The actual maximum number of instances is limited by the cores that are available in the subscription.
+                                type: string
+                                required: true
+                              - name: default
+                                description: |
+                                  the number of instances that will be set if metrics are not available for evaluation. The default is only used if the current instance count is lower than the default.
+                                type: string
+                                required: true
+                          - name: rules
+                            description: |
+                              the collection of rules that provide the triggers and parameters for the scaling action. A maximum of 10 rules can be specified.
+                            type: array
+                            required: true
+                            items:
+                              type: object
+                              description: |
+                                A rule that provide the triggers and parameters for the scaling action.
+                              properties:
+                                - name: metric_trigger
+                                  description: |
+                                    the trigger that results in a scaling action.
+                                  type: object
+                                  required: true
+                                  properties:
+                                    - name: metric_name
+                                      description: |
+                                        the name of the metric that defines what the rule monitors.
+                                      type: string
+                                      required: true
+                                    - name: metric_namespace
+                                      description: |
+                                        the namespace of the metric that defines what the rule monitors.
+                                      type: string
+                                    - name: metric_resource_uri
+                                      description: |
+                                        the resource identifier of the resource the rule monitors.
+                                      type: string
+                                      required: true
+                                    - name: time_grain
+                                      description: |
+                                        the granularity of metrics the rule monitors. Must be one of the predefined values returned from metric definitions for the metric. Must be between 12 hours and 1 minute.
+                                      type: string
+                                      format: duration
+                                      required: true
+                                    - name: statistic
+                                      description: |
+                                        the metric statistic type. How the metrics from multiple instances are combined.
+                                      type: string
+                                      required: true
+                                      enum:
+                                        name: MetricStatisticType
+                                        modelAsString: false
+                                        values:
+                                          - Average
+                                          - Min
+                                          - Max
+                                          - Sum
+                                    - name: time_window
+                                      description: |
+                                        the range of time in which instance data is collected. This value must be greater than the delay in metric collection, which can vary from resource-to-resource. Must be between 12 hours and 5 minutes.
+                                      type: string
+                                      format: duration
+                                      required: true
+                                    - name: time_aggregation
+                                      description: |
+                                        time aggregation type. How the data that is collected should be combined over time. The default value is Average.
+                                      type: string
+                                      required: true
+                                      enum:
+                                        name: TimeAggregationType
+                                        modelAsString: false
+                                        values:
+                                          - Average
+                                          - Minimum
+                                          - Maximum
+                                          - Total
+                                          - Count
+                                          - Last
+                                    - name: operator
+                                      description: |
+                                        the operator that is used to compare the metric data and the threshold.
+                                      type: string
+                                      required: true
+                                      enum:
+                                        name: ComparisonOperationType
+                                        values:
+                                          - Equals
+                                          - NotEquals
+                                          - GreaterThan
+                                          - GreaterThanOrEqual
+                                          - LessThan
+                                          - LessThanOrEqual
+                                    - name: threshold
+                                      description: |
+                                        the threshold of the metric that triggers the scale action.
+                                      type: number
+                                      format: double
+                                      required: true
+                                    - name: dimensions
+                                      description: |
+                                        List of dimension conditions. For example: [{\"DimensionName\":\"AppName\",\"Operator\":\"Equals\",\"Values\":[\"App1\"]},{\"DimensionName\":\"Deployment\",\"Operator\":\"Equals\",\"Values\":[\"default\"]}].
+                                      type: array
+                                      items:
+                                        type: object
+                                        description: |
+                                          Specifies an auto scale rule metric dimension.
+                                        properties:
+                                          - name: dimension_name
+                                            description: |
+                                              Name of the dimension.
+                                            type: string
+                                            required: true
+                                          - name: operator
+                                            description: |
+                                              the dimension operator. Only 'Equals' and 'NotEquals' are supported. 'Equals' being equal to any of the values. 'NotEquals' being not equal to all of the values
+                                            type: string
+                                            required: true
+                                            enum:
+                                              name: ScaleRuleMetricDimensionOperationType
+                                              modelAsString: true
+                                              values:
+                                                - Equals
+                                                - NotEquals
+                                          - name: values
+                                            description: |
+                                              list of dimension values. For example: ["App1","App2"].
+                                            type: array
+                                            required: true
+                                            items:
+                                              type: string
+                                - name: scale_action
+                                  description: |
+                                    the parameters for the scaling action.
+                                  type: object
+                                  required: true
+                                  properties:
+                                    - name: direction
+                                      description: |
+                                        the scale direction. Whether the scaling action increases or decreases the number of instances.
+                                      type: string
+                                      required: true
+                                      enum:
+                                        name: ScaleDirection
+                                        modelAsString: false
+                                        values:
+                                          - None
+                                          - Increase
+                                          - Decrease
+                                    - name: type
+                                      description: |
+                                        the type of action that should occur when the scale rule fires.
+                                      type: string
+                                      required: true
+                                      enum:
+                                        name: ScaleType
+                                        modelAsString: false
+                                        values:
+                                          - ChangeCount
+                                          - PercentChangeCount
+                                          - ExactCount
+                                    - name: value
+                                      description: |
+                                        the number of instances that are involved in the scaling action. This value must be 1 or greater. The default value is 1.
+                                      type: string
+                                      default: 1
+                                    - name: cooldown
+                                      description: |
+                                        the amount of time to wait since the last scaling action before this action occurs. It must be between 1 week and 1 minute in ISO 8601 format.
+                                      type: string
+                                      format: duration
+                                      required: true
+                          - name: fixed_date
+                            description: |
+                              the specific date-time for the profile. This element is not used if the Recurrence element is used.
+                            properties:
+                              - name: time_zone
+                                description: |
+                                  the timezone of the start and end times for the profile. Some examples of valid time zones are: Dateline Standard Time, UTC-11, Hawaiian Standard Time, Alaskan Standard Time, Pacific Standard Time (Mexico), Pacific Standard Time, US Mountain Standard Time, Mountain Standard Time (Mexico), Mountain Standard Time, Central America Standard Time, Central Standard Time, Central Standard Time (Mexico), Canada Central Standard Time, SA Pacific Standard Time, Eastern Standard Time, US Eastern Standard Time, Venezuela Standard Time, Paraguay Standard Time, Atlantic Standard Time, Central Brazilian Standard Time, SA Western Standard Time, Pacific SA Standard Time, Newfoundland Standard Time, E. South America Standard Time, Argentina Standard Time, SA Eastern Standard Time, Greenland Standard Time, Montevideo Standard Time, Bahia Standard Time, UTC-02, Mid-Atlantic Standard Time, Azores Standard Time, Cape Verde Standard Time, Morocco Standard Time, UTC, GMT Standard Time, Greenwich Standard Time, W. Europe Standard Time, Central Europe Standard Time, Romance Standard Time, Central European Standard Time, W. Central Africa Standard Time, Namibia Standard Time, Jordan Standard Time, GTB Standard Time, Middle East Standard Time, Egypt Standard Time, Syria Standard Time, E. Europe Standard Time, South Africa Standard Time, FLE Standard Time, Turkey Standard Time, Israel Standard Time, Kaliningrad Standard Time, Libya Standard Time, Arabic Standard Time, Arab Standard Time, Belarus Standard Time, Russian Standard Time, E. Africa Standard Time, Iran Standard Time, Arabian Standard Time, Azerbaijan Standard Time, Russia Time Zone 3, Mauritius Standard Time, Georgian Standard Time, Caucasus Standard Time, Afghanistan Standard Time, West Asia Standard Time, Ekaterinburg Standard Time, Pakistan Standard Time, India Standard Time, Sri Lanka Standard Time, Nepal Standard Time, Central Asia Standard Time, Bangladesh Standard Time, N. Central Asia Standard Time, Myanmar Standard Time, SE Asia Standard Time, North Asia Standard Time, China Standard Time, North Asia East Standard Time, Singapore Standard Time, W. Australia Standard Time, Taipei Standard Time, Ulaanbaatar Standard Time, Tokyo Standard Time, Korea Standard Time, Yakutsk Standard Time, Cen. Australia Standard Time, AUS Central Standard Time, E. Australia Standard Time, AUS Eastern Standard Time, West Pacific Standard Time, Tasmania Standard Time, Magadan Standard Time, Vladivostok Standard Time, Russia Time Zone 10, Central Pacific Standard Time, Russia Time Zone 11, New Zealand Standard Time, UTC+12, Fiji Standard Time, Kamchatka Standard Time, Tonga Standard Time, Samoa Standard Time, Line Islands Standard Time
+                                type: string
+                              - name: start
+                                decription: |
+                                  the start time for the profile in ISO 8601 format.
+                                type: string
+                                format: date-time
+                                required: true
+                              - name: end
+                                description: |
+                                  the end time for the profile in ISO 8601 format.
+                                type: string
+                                format: date-time
+                                required: true
+                          - name: recurrence
+                            description: |
+                              the repeating times at which this profile begins. This element is not used if the FixedDate element is used.
+                            type: object
+                            properties:
+                              - name: frequency
+                                description: |
+                                  the recurrence frequency. How often the schedule profile should take effect. This value must be Week, meaning each week will have the same set of profiles. For example, to set a daily schedule, set **schedule** to every day of the week. The frequency property specifies that the schedule is repeated weekly.
+                                type: string
+                                required: true
+                                enum:
+                                  name: RecurrenceFrequency
+                                  modelAsString: false
+                                  values:
+                                    - None
+                                    - Second
+                                    - Minute
+                                    - Hour
+                                    - Day
+                                    - Week
+                                    - Month
+                                    - Year
+                              - name: schedule
+                                description: |
+                                  the scheduling constraints for when the profile begins.
+                                type: object
+                                required: true
+                                properties:
+                                  - name: time_zone
+                                    description: |
+                                      the timezone of the start and end times for the profile. Some examples of valid time zones are: Dateline Standard Time, UTC-11, Hawaiian Standard Time, Alaskan Standard Time, Pacific Standard Time (Mexico), Pacific Standard Time, US Mountain Standard Time, Mountain Standard Time (Mexico), Mountain Standard Time, Central America Standard Time, Central Standard Time, Central Standard Time (Mexico), Canada Central Standard Time, SA Pacific Standard Time, Eastern Standard Time, US Eastern Standard Time, Venezuela Standard Time, Paraguay Standard Time, Atlantic Standard Time, Central Brazilian Standard Time, SA Western Standard Time, Pacific SA Standard Time, Newfoundland Standard Time, E. South America Standard Time, Argentina Standard Time, SA Eastern Standard Time, Greenland Standard Time, Montevideo Standard Time, Bahia Standard Time, UTC-02, Mid-Atlantic Standard Time, Azores Standard Time, Cape Verde Standard Time, Morocco Standard Time, UTC, GMT Standard Time, Greenwich Standard Time, W. Europe Standard Time, Central Europe Standard Time, Romance Standard Time, Central European Standard Time, W. Central Africa Standard Time, Namibia Standard Time, Jordan Standard Time, GTB Standard Time, Middle East Standard Time, Egypt Standard Time, Syria Standard Time, E. Europe Standard Time, South Africa Standard Time, FLE Standard Time, Turkey Standard Time, Israel Standard Time, Kaliningrad Standard Time, Libya Standard Time, Arabic Standard Time, Arab Standard Time, Belarus Standard Time, Russian Standard Time, E. Africa Standard Time, Iran Standard Time, Arabian Standard Time, Azerbaijan Standard Time, Russia Time Zone 3, Mauritius Standard Time, Georgian Standard Time, Caucasus Standard Time, Afghanistan Standard Time, West Asia Standard Time, Ekaterinburg Standard Time, Pakistan Standard Time, India Standard Time, Sri Lanka Standard Time, Nepal Standard Time, Central Asia Standard Time, Bangladesh Standard Time, N. Central Asia Standard Time, Myanmar Standard Time, SE Asia Standard Time, North Asia Standard Time, China Standard Time, North Asia East Standard Time, Singapore Standard Time, W. Australia Standard Time, Taipei Standard Time, Ulaanbaatar Standard Time, Tokyo Standard Time, Korea Standard Time, Yakutsk Standard Time, Cen. Australia Standard Time, AUS Central Standard Time, E. Australia Standard Time, AUS Eastern Standard Time, West Pacific Standard Time, Tasmania Standard Time, Magadan Standard Time, Vladivostok Standard Time, Russia Time Zone 10, Central Pacific Standard Time, Russia Time Zone 11, New Zealand Standard Time, UTC+12, Fiji Standard Time, Kamchatka Standard Time, Tonga Standard Time, Samoa Standard Time, Line Islands Standard Time
+                                    type: string
+                                    required: true
+                                  - name: days
+                                    description: |
+                                      the collection of days that the profile takes effect on. Possible values are Sunday through Saturday.
+                                    type: array
+                                    required: true
+                                    items:
+                                      type: string
+                                  - name: hours
+                                    description: |
+                                      A collection of hours that the profile takes effect on. Values supported are 0 to 23 on the 24-hour clock (AM/PM times are not supported).
+                                    type: array
+                                    required: true
+                                    items:
+                                      type: integer
+                                      format: int32
+                                  - name: minutes
+                                    description: |
+                                      A collection of minutes at which the profile takes effect at.
+                                    type: array
+                                    required: true
+                                    items:
+                                      type: integer
+                                      format: int32
+                    - name: notifications
+                      description: |
+                        the collection of notifications.
+                      type: array
+                      items:
+                        type: object
+                        description: |
+                          Autoscale notification.
+                        properties:
+                          - name: operation
+                            description: |
+                              the operation associated with the notification and its value must be "scale"
+                            type: string
+                            required: true
+                            enum:
+                              name: OperationType
+                              modelAsString: false
+                              values:
+                                - Scale
+                          - name: email
+                            description: |
+                              the email notification.
+                            type: object
+                            properties:
+                              - name: send_to_subscription_administrator
+                                description: |
+                                  a value indicating whether to send email to subscription administrator.
+                                type: boolean
+                              - name: send_to_subscription_co_administrators
+                                description: |
+                                  a value indicating whether to send email to subscription co-administrators.
+                                type: boolean
+                              - name: custom_emails
+                                description: |
+                                  the custom e-mails list. This value can be null or empty, in which case this attribute will be ignored.
+                                type: array
+                                items:
+                                  type: string
+                          - name: webhooks
+                            description: |
+                              the collection of webhook notifications.
+                            type: object
+                            properties:
+                              - name: service_uri
+                                description: |
+                                  the service address to receive the notification.
+                                type: string
+                              - name: properties
+                                description: |
+                                  a property bag of settings. This value can be empty.
+                                type: object
+                                additionalProperties:
+                                  type: string
