@@ -8,12 +8,12 @@
 providers:
   - id: Microsoft.Insights
     command-group: monitor
-    is_preview: false
+    is-preview: false
     resources:
       - id: AutoscaleSettings # the first part of operation_id
-        operation_group: autoscale_settings
+        operation-group: autoscale_settings
         command-group: autoscale  # it can also be ".. monitor autoscale". The ".." means overwriting parent command group name
-        is_preview: false
+        is-preview: false
         operations:
           - id: ListBySubscription
             command-group:
@@ -23,7 +23,7 @@ providers:
             version: 2015-04-01
             profiles:
               - latest
-            is_preview: false
+            is-preview: false
             description: |
               Lists the autoscale settings for a subscription
             parameters:
@@ -49,7 +49,7 @@ providers:
             version: 2015-04-01
             profiles:
               - latest
-            is_preview: false
+            is-preview: false
             description: |
               Lists the autoscale settings for a resource group
             parameters:
@@ -80,7 +80,7 @@ providers:
             version: 2015-04-01
             profiles:
               - latest
-            is_preview: false
+            is-preview: false
             description: |
               Deletes and autoscale setting
             parameters:
@@ -116,7 +116,7 @@ providers:
             version: 2015-04-01
             profiles:
               - latest
-            is_preview: false
+            is-preview: false
             description: |
               Gets an autoscale setting
             parameters:
@@ -519,7 +519,7 @@ providers:
             version: 2015-04-01
             profiles:
               - latest
-            is_preview: false
+            is-preview: false
             description: |
               Creates or updates an autoscale setting
             parameters:
@@ -922,7 +922,7 @@ providers:
             version: 2015-04-01
             profiles:
               - latest
-            is_preview: false
+            is-preview: false
             description: |
               Updates an existing AutoscaleSettingsResource. To update other fields use the CreateOrUpdate method.
             parameters:
