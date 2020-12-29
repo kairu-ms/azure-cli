@@ -10,86 +10,98 @@ name: az
 groups:
   # monitor
   - name: monitor
-    helps:
+    help:
       short-summary: Manage the Azure Monitor Service.
     groups:
       - name: autoscale
-        helps:
+        help:
           short-summary: Manage autoscale settings.
           long-summary: >
             For more information on autoscaling, visit: https://docs.microsoft.com/azure/monitoring-and-diagnostics/monitoring-understanding-autoscale-settings
         commands:
           - name: show
-            helps:
+            help:
               short-summary: Show autoscale setting details.
               long-summary:
             examples:
-            parameters:
-              # TODO:
+            arguments:
+              - name: autoscale_setting_name
+                type: str
+                options-list:
+                  - --name
+                  - -n
+                id-part: name
+                help: |
+                  Name of the autoscale settings.
+
           - name: delete
-            helps:
+            help:
               short-summary: Delete and autoscale setting
               long-summary:
             examples:
             parameters:
               # TODO:
+
           - name: list
-            helps:
+            help:
               short-summary:
               long-summary:
             examples:
             parameters:
               # TODO:
+
           - name: create
-            helps:
+            help:
               short-summary: Create new autoscale settings.
               long-summary: >
                 For more information on autoscaling, visit: https://docs.microsoft.com/azure/monitoring-and-diagnostics/monitoring-understanding-autoscale-settings
             examples:
             parameters:
               # TODO:
+
           - name: update
-            helps:
+            help:
               short-summary:
               long-summary:
             examples:
             parameters:
               # TODO:
+
         groups:
           - name: profile
-            helps:
+            help:
               short-summary: Manage autoscaling profiles.
             commands:
               - name: create
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: delete
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: update
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: list
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: show
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
@@ -97,46 +109,46 @@ groups:
                   # TODO:
               # manual commands
               - name: list-timezones
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
           - name: rule
-            helps:
+            help:
               short-summary: Manage autoscale scaling rules.
             commands:
               - name: create
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: delete
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: update
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: list
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: show
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
@@ -144,46 +156,46 @@ groups:
                   # TODO:
               # manual commands
               - name: copy
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
           - name: notification
-            helps:
+            help:
               short-summary: Manage autoscale notifications.
             commands:
               - name: create
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: delete
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: update
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: list
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
                 parameters:
                   # TODO:
               - name: show
-                helps:
+                help:
                   short-summary:
                   long-summary:
                 examples:
