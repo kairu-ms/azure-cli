@@ -31,5 +31,5 @@ class AzFuncTransformer(AzTransformer):
         return "{}#{}".format(self.module_name, self.name)
 
 
-def func_transformer_wrapper(validator):
-    return AzFuncTransformer(validator)
+def func_transformer_wrapper(func):
+    return AzFuncTransformer(func)

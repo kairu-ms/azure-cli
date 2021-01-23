@@ -31,5 +31,5 @@ class AzFuncClientFactory(AzClientFactory):
         return "{}#{}".format(self.module_name, self.name)
 
 
-def func_client_factory_wrapper(client_factory):
-    return AzFuncClientFactory(client_factory)
+def func_client_factory_wrapper(func):
+    return AzFuncClientFactory(func)
