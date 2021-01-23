@@ -1,19 +1,6 @@
-import inspect
-
-
-class ClientFactory:
-
-    def __init__(self, client_factory_func):
-        self.module_name = inspect.getmodule(client_factory_func).__name__
-        self.name = client_factory_func.__name__
-        self.client_factory_func = client_factory_func
-
-    def __call__(self, *args, **kwargs):
-        return self.client_factory_func(*args, **kwargs)
-
-    def __str__(self):
-        return "{}#{}".format(self.module_name, self.name)
-
-
-def client_factory_register(client_factory):
-    return ClientFactory(client_factory)
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+from .client_factory import func_client_factory_wrapper
+from .validator import func_validator_wrapper
