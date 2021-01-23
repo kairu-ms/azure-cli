@@ -31,12 +31,6 @@ class AzFuncValidator(AzValidator):
         return "{}#{}".format(self.module_name, self.name)
 
 
-class AzPropertyFuncValidator(AzValidator):
-
-    def __init__(self, func):
-        pass
-
-
 class AzClassValidator(AzValidator):
 
     def __init__(self, cls, args, kwargs):

@@ -5,8 +5,10 @@
 
 
 from collections import OrderedDict
+from azure.cli.core.translator import func_transformer_wrapper
 
 
+@func_transformer_wrapper
 def transform_dns_record_set_output(result):
     from azure.mgmt.dns.models import RecordSetPaged
 
@@ -25,6 +27,7 @@ def transform_dns_record_set_output(result):
     return result
 
 
+@func_transformer_wrapper
 def transform_dns_record_set_table_output(result):
     table_output = []
 
@@ -43,6 +46,7 @@ def transform_dns_record_set_table_output(result):
     return table_output
 
 
+@func_transformer_wrapper
 def transform_dns_zone_table_output(result):
     is_list = isinstance(result, list)
 
@@ -62,6 +66,7 @@ def transform_dns_zone_table_output(result):
     return final_result if is_list else final_result[0]
 
 
+@func_transformer_wrapper
 def transform_local_gateway_table_output(result):
     final_result = []
     for item in result:
@@ -81,10 +86,12 @@ def transform_local_gateway_table_output(result):
     return final_result
 
 
+@func_transformer_wrapper
 def transform_vpn_connection_list(result):
     return [transform_vpn_connection(v) for v in result]
 
 
+@func_transformer_wrapper
 def transform_vpn_connection(result):
     if result:
         properties_to_strip = \
@@ -100,10 +107,12 @@ def transform_vpn_connection(result):
     return result
 
 
+@func_transformer_wrapper
 def transform_vnet_create_output(result):
     return {'newVNet': result.result()}
 
 
+@func_transformer_wrapper
 def transform_vnet_table_output(result):
 
     def _transform(result):
@@ -122,24 +131,29 @@ def transform_vnet_table_output(result):
     return _transform(result)
 
 
+@func_transformer_wrapper
 def transform_public_ip_create_output(result):
     return {'publicIp': result.result()}
 
 
+@func_transformer_wrapper
 def transform_traffic_manager_create_output(result):
     return {'TrafficManagerProfile': result}
 
 
+@func_transformer_wrapper
 def transform_nic_create_output(result):
     if result:
         return {'NewNIC': result.result()}
     return None
 
 
+@func_transformer_wrapper
 def transform_nsg_create_output(result):
     return {'NewNSG': result.result()}
 
 
+@func_transformer_wrapper
 def transform_nsg_rule_table_output(result):
     item = OrderedDict()
     item['Name'] = result['name']
@@ -158,11 +172,18 @@ def transform_nsg_rule_table_output(result):
     return item
 
 
+@func_transformer_wrapper
+def transform_nsg_rule_list_table_output(result):
+    return [transform_nsg_rule_table_output(i) for i in result]
+
+
+@func_transformer_wrapper
 def transform_vnet_gateway_create_output(result):
     result = {'vnetGateway': result.result()} if result else result
     return result
 
 
+@func_transformer_wrapper
 def transform_geographic_hierachy_table_output(result):
     transformed = []
 
@@ -179,6 +200,7 @@ def transform_geographic_hierachy_table_output(result):
     return transformed
 
 
+@func_transformer_wrapper
 def transform_service_community_table_output(result):
     transformed = []
     for item in result:
@@ -192,6 +214,7 @@ def transform_service_community_table_output(result):
     return transformed
 
 
+@func_transformer_wrapper
 def transform_waf_rule_sets_table_output(result):
     transformed = []
     for item in result:
@@ -214,6 +237,7 @@ def transform_waf_rule_sets_table_output(result):
     return transformed
 
 
+@func_transformer_wrapper
 def transform_network_usage_list(result):
     result = list(result)
     for item in result:
@@ -223,6 +247,7 @@ def transform_network_usage_list(result):
     return result
 
 
+@func_transformer_wrapper
 def transform_network_usage_table(result):
     transformed = []
     for item in result:
@@ -234,6 +259,7 @@ def transform_network_usage_table(result):
     return transformed
 
 
+@func_transformer_wrapper
 def transform_effective_route_table(result):
     transformed = []
     for item in result['value']:
@@ -247,6 +273,7 @@ def transform_effective_route_table(result):
     return transformed
 
 
+@func_transformer_wrapper
 def transform_effective_nsg(result):
     from msrestazure.tools import parse_resource_id
     transformed = []
@@ -276,6 +303,7 @@ def transform_effective_nsg(result):
     return transformed
 
 
+@func_transformer_wrapper
 def transform_vnet_gateway_routes_table(result):
     transformed = []
     for item in result.get('value', []):
@@ -290,6 +318,7 @@ def transform_vnet_gateway_routes_table(result):
     return transformed
 
 
+@func_transformer_wrapper
 def transform_vnet_gateway_bgp_peer_table(result):
     transformed = []
     for item in result.get('value', []):

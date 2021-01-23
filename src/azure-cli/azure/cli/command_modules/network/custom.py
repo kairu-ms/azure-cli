@@ -24,6 +24,7 @@ from azure.cli.command_modules.network.zone_file.parse_zone_file import parse_zo
 from azure.cli.command_modules.network.zone_file.make_zone_file import make_zone_file
 from azure.cli.core.profiles import ResourceType, supported_api_version
 from azure.cli.core.azclierror import ResourceNotFoundError
+from azure.cli.core.commands import DeploymentOutputLongRunningOperation
 
 logger = get_logger(__name__)
 
@@ -257,13 +258,16 @@ def create_application_gateway(cmd, application_gateway_name, resource_group_nam
             from azure.cli.core.commands import LongRunningOperation
             _log_pprint_template(template)
             validation_poller = client.validate(resource_group_name, deployment_name, deployment)
-            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
-        return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, deployment)
+            return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(validation_poller)
+        return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(
+            sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, deployment))
 
     if validate:
         _log_pprint_template(template)
-        return client.validate(resource_group_name, deployment_name, properties)
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, properties)
+        validation_poller = client.validate(resource_group_name, deployment_name, properties)
+        return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(validation_poller)
+    return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(
+        sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, properties))
 
 
 def update_application_gateway(cmd, instance, sku=None, capacity=None, tags=None, enable_http2=None, min_capacity=None,
@@ -3273,13 +3277,16 @@ def create_load_balancer(cmd, load_balancer_name, resource_group_name, location=
             from azure.cli.core.commands import LongRunningOperation
             _log_pprint_template(template)
             validation_poller = client.validate(resource_group_name, deployment_name, deployment)
-            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
-        return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, deployment)
+            return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(validation_poller)
+        return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(
+            sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, deployment))
 
     if validate:
         _log_pprint_template(template)
-        return client.validate(resource_group_name, deployment_name, properties)
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, properties)
+        validation_poller = client.validate(resource_group_name, deployment_name, properties)
+        return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(validation_poller)
+    return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(
+        sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, properties))
 
 
 def create_lb_inbound_nat_rule(
@@ -3581,13 +3588,16 @@ def create_cross_region_load_balancer(cmd, load_balancer_name, resource_group_na
             from azure.cli.core.commands import LongRunningOperation
             _log_pprint_template(template)
             validation_poller = client.validate(resource_group_name, deployment_name, deployment)
-            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
-        return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, deployment)
+            return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(validation_poller)
+        return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(
+            sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, deployment))
 
     if validate:
         _log_pprint_template(template)
-        return client.validate(resource_group_name, deployment_name, properties)
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, properties)
+        validation_poller = client.validate(resource_group_name, deployment_name, properties)
+        return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(validation_poller)
+    return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(
+        sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, properties))
 
 
 def create_cross_region_lb_frontend_ip_configuration(
@@ -6415,13 +6425,16 @@ def create_vpn_connection(cmd, resource_group_name, connection_name, vnet_gatewa
             from azure.cli.core.commands import LongRunningOperation
             _log_pprint_template(template)
             validation_poller = client.validate(resource_group_name, deployment_name, deployment)
-            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
-        return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, deployment)
+            return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(validation_poller)
+        return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(
+            sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, deployment))
 
     if validate:
         _log_pprint_template(template)
-        return client.validate(resource_group_name, deployment_name, properties)
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, properties)
+        validation_poller = client.validate(resource_group_name, deployment_name, properties)
+        return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(validation_poller)
+    return DeploymentOutputLongRunningOperation(cmd.cli_ctx)(
+        sdk_no_wait(no_wait, client.create_or_update, resource_group_name, deployment_name, properties))
 
 
 def update_vpn_connection(cmd, instance, routing_weight=None, shared_key=None, tags=None,
