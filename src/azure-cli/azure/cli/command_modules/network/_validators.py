@@ -19,7 +19,7 @@ from azure.cli.core.commands.template_create import get_folded_parameter_validat
 from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_parameter_set
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.translator import func_validator_wrapper, cls_validator_wrapper
+from azure.cli.core.translator import func_validator_wrapper, validator_factory_wrapper
 
 logger = get_logger(__name__)
 
@@ -45,7 +45,7 @@ def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path,
         'API version is required and could not be resolved for resource {}'.format(resource_type))
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def get_asg_validator(loader, dest):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
@@ -74,7 +74,7 @@ def get_asg_validator(loader, dest):
     return _validate_asg_name_or_id
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def get_subscription_list_validator(dest, model_class):
     def _validate_subscription_list(cmd, namespace):
         val = getattr(namespace, dest, None)
@@ -86,7 +86,7 @@ def get_subscription_list_validator(dest, model_class):
     return _validate_subscription_list
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def get_vnet_validator(dest):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
@@ -388,7 +388,7 @@ def validate_waf_policy(cmd, namespace):
         )
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def bandwidth_validator_factory(mbps=True):
     def validator(namespace):
         return validate_circuit_bandwidth(namespace, mbps=mbps)
@@ -586,7 +586,7 @@ def validate_route_filter(cmd, namespace):
                 name=namespace.route_filter)
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def get_public_ip_validator(has_type_field=False, allow_none=False, allow_new=False,
                             default_none=False):
     """ Retrieves a validator for public IP address. Accepting all defaults will perform a check
@@ -621,7 +621,7 @@ def get_public_ip_validator(has_type_field=False, allow_none=False, allow_new=Fa
     return complex_validator_with_type if has_type_field else simple_validator
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def get_subnet_validator(has_type_field=False, allow_none=False, allow_new=False,
                          default_none=False):
     from msrestazure.tools import is_valid_resource_id, resource_id
@@ -665,7 +665,7 @@ def get_subnet_validator(has_type_field=False, allow_none=False, allow_new=False
     return complex_validator_with_type if has_type_field else simple_validator
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def get_nsg_validator(has_type_field=False, allow_none=False, allow_new=False, default_none=False):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
@@ -706,7 +706,7 @@ def validate_service_endpoint_policy(cmd, namespace):
         namespace.service_endpoint_policy = policy_ids
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def get_servers_validator(camel_case=False):
     def validate_servers(namespace):
         servers = []
@@ -1241,7 +1241,7 @@ def process_vpn_connection_create_namespace(cmd, namespace):
         namespace.connection_type = 'Vnet2Vnet'
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def load_cert_file(param_name):
     def load_cert_validator(namespace):
         attr = getattr(namespace, param_name)
@@ -1269,7 +1269,7 @@ def get_network_watcher_from_resource(cmd, namespace):
     get_network_watcher_from_location(remove=True)(cmd, namespace)
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def get_network_watcher_from_location(remove=False, watcher_name='watcher_name',
                                       rg_name='watcher_rg'):
     def _validator(cmd, namespace):
@@ -1959,7 +1959,7 @@ class WafConfigExclusionAction(argparse.Action):
         ))
 
 
-@cls_validator_wrapper
+@validator_factory_wrapper
 def get_header_configuration_validator(dest):
     def validator(namespace):
         values = getattr(namespace, dest, None)

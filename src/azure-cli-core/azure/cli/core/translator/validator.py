@@ -33,16 +33,16 @@ class AzFuncValidator(AzValidator):
 
 class AzClassValidator(AzValidator):
 
-    def __init__(self, cls, args, kwargs):
-        if isinstance(cls, types.FunctionType):     # support a function which return value is callable
-            sig = inspect.signature(cls)
-        elif isinstance(cls, type):
-            sig = inspect.signature(cls.__init__)
+    def __init__(self, factory, args, kwargs):
+        if isinstance(factory, types.FunctionType):     # support a factory function which return value is callable
+            sig = inspect.signature(factory)
+        elif isinstance(factory, type):
+            sig = inspect.signature(factory.__init__)
         else:
-            raise TypeError("Expect a function or a class. Got {}".format(type(cls)))
+            raise TypeError("Expect a function or a class. Got {}".format(type(factory)))
 
-        self.module_name = inspect.getmodule(cls).__name__
-        self.name = cls.__name__
+        self.module_name = inspect.getmodule(factory).__name__
+        self.name = factory.__name__
         self.kwargs = {}
         if len(args) > 0:
             keys = list(sig.parameters.keys())
@@ -52,7 +52,7 @@ class AzClassValidator(AzValidator):
             for key, value in zip(keys, args):
                 self.kwargs[key] = value
         self.kwargs.update(kwargs)
-        self.instance = cls(*args, **kwargs)
+        self.instance = factory(*args, **kwargs)
         if not callable(self.instance):
             raise TypeError('Expect a callable instance.')
 
@@ -63,11 +63,11 @@ class AzClassValidator(AzValidator):
         return "{}#{}".format(self.module_name, self.name)
 
 
-def func_validator_wrapper(validator):
-    return AzFuncValidator(validator)
+def func_validator_wrapper(func):
+    return AzFuncValidator(func)
 
 
-def cls_validator_wrapper(validator_cls):
+def validator_factory_wrapper(factory):
     def wrapper(*args, **kwargs):
-        return AzClassValidator(validator_cls, args, kwargs)
+        return AzClassValidator(factory, args, kwargs)
     return wrapper
