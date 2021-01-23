@@ -5,4 +5,5 @@
 from .client_factory import func_client_factory_wrapper
 from .validator import func_validator_wrapper, validator_factory_wrapper
 from .transformer import func_transformer_wrapper
+from .exception_handler import func_exception_handler_wrapper
 
