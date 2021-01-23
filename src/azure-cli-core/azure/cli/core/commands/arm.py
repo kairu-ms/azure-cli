@@ -17,6 +17,7 @@ from azure.cli.core.commands.events import EVENT_INVOKER_PRE_LOAD_ARGUMENTS
 from azure.cli.core.commands.validators import IterateValue
 from azure.cli.core.util import shell_safe_json_parse, get_command_type_kwarg
 from azure.cli.core.profiles import ResourceType, get_sdk
+from azure.cli.core.translator import func_transformer_wrapper
 
 from knack.arguments import CLICommandArgument, ignore_type
 from knack.introspection import extract_args_from_signature
@@ -131,6 +132,7 @@ def handle_long_running_operation_exception(ex):
     raise cli_error
 
 
+@func_transformer_wrapper
 def deployment_validate_table_format(result):
 
     if result.get('error', None):

@@ -5,7 +5,6 @@
 
 # pylint: disable=line-too-long,too-many-lines
 
-from azure.cli.core.commands import DeploymentOutputLongRunningOperation
 from azure.cli.core.commands.arm import (
     deployment_validate_table_format, handle_template_based_exception)
 from azure.cli.core.commands import CliCommandType
@@ -42,6 +41,7 @@ from azure.cli.command_modules.network._format import (
     transform_geographic_hierachy_table_output,
     transform_service_community_table_output, transform_waf_rule_sets_table_output,
     transform_network_usage_list, transform_network_usage_table, transform_nsg_rule_table_output,
+    transform_nsg_rule_list_table_output,
     transform_vnet_table_output, transform_effective_route_table, transform_effective_nsg,
     transform_vnet_gateway_routes_table, transform_vnet_gateway_bgp_peer_table)
 from azure.cli.command_modules.network._validators import (
@@ -422,7 +422,6 @@ def load_command_table(self, _):
     # region ApplicationGateways
     with self.command_group('network application-gateway', network_ag_sdk) as g:
         g.custom_command('create', 'create_application_gateway',
-                         transform=DeploymentOutputLongRunningOperation(self.cli_ctx),
                          supports_no_wait=True,
                          table_transformer=deployment_validate_table_format,
                          validator=process_ag_create_namespace,
@@ -813,7 +812,7 @@ def load_command_table(self, _):
     # region LoadBalancers
     with self.command_group('network lb', network_lb_sdk) as g:
         g.show_command('show', 'get')
-        g.custom_command('create', 'create_load_balancer', transform=DeploymentOutputLongRunningOperation(self.cli_ctx), supports_no_wait=True, table_transformer=deployment_validate_table_format, validator=process_lb_create_namespace, exception_handler=handle_template_based_exception)
+        g.custom_command('create', 'create_load_balancer', supports_no_wait=True, table_transformer=deployment_validate_table_format, validator=process_lb_create_namespace, exception_handler=handle_template_based_exception)
         g.command('delete', 'begin_delete')
         g.custom_command('list', 'list_lbs')
         g.wait_command('wait')
@@ -897,7 +896,7 @@ def load_command_table(self, _):
     # region cross-region load balancer
     with self.command_group('network cross-region-lb', network_lb_sdk) as g:
         g.show_command('show', 'get')
-        g.custom_command('create', 'create_cross_region_load_balancer', transform=DeploymentOutputLongRunningOperation(self.cli_ctx), supports_no_wait=True, table_transformer=deployment_validate_table_format, validator=process_cross_region_lb_create_namespace, exception_handler=handle_template_based_exception)
+        g.custom_command('create', 'create_cross_region_load_balancer', supports_no_wait=True, table_transformer=deployment_validate_table_format, validator=process_cross_region_lb_create_namespace, exception_handler=handle_template_based_exception)
         g.command('delete', 'begin_delete')
         g.custom_command('list', 'list_lbs')
         g.generic_update_command('update', setter_name='begin_create_or_update')
@@ -999,7 +998,7 @@ def load_command_table(self, _):
 
     with self.command_group('network nsg rule', network_nsg_rule_sdk) as g:
         g.command('delete', 'begin_delete')
-        g.custom_command('list', 'list_nsg_rules', table_transformer=lambda x: [transform_nsg_rule_table_output(i) for i in x])
+        g.custom_command('list', 'list_nsg_rules', table_transformer=transform_nsg_rule_list_table_output)
         g.show_command('show', 'get', table_transformer=transform_nsg_rule_table_output)
         g.custom_command('create', 'create_nsg_rule_2017_06_01', min_api='2017-06-01')
         g.generic_update_command('update', setter_arg_name='security_rule_parameters', min_api='2017-06-01',
@@ -1288,7 +1287,7 @@ def load_command_table(self, _):
 
     # region VirtualNetworkGatewayConnections
     with self.command_group('network vpn-connection', network_vpn_sdk) as g:
-        g.custom_command('create', 'create_vpn_connection', transform=DeploymentOutputLongRunningOperation(self.cli_ctx), table_transformer=deployment_validate_table_format, validator=process_vpn_connection_create_namespace, exception_handler=handle_template_based_exception)
+        g.custom_command('create', 'create_vpn_connection', table_transformer=deployment_validate_table_format, validator=process_vpn_connection_create_namespace, exception_handler=handle_template_based_exception)
         g.command('delete', 'begin_delete')
         g.show_command('show', 'get', transform=transform_vpn_connection)
         g.command('list', 'list', transform=transform_vpn_connection_list)
