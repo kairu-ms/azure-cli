@@ -19,7 +19,7 @@ from azure.cli.core.commands.template_create import get_folded_parameter_validat
 from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_parameter_set
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.translator import func_validator_wrapper
+from azure.cli.core.translator import func_validator_wrapper, cls_validator_wrapper
 
 logger = get_logger(__name__)
 
@@ -45,6 +45,7 @@ def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path,
         'API version is required and could not be resolved for resource {}'.format(resource_type))
 
 
+@cls_validator_wrapper
 def get_asg_validator(loader, dest):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
@@ -73,6 +74,7 @@ def get_asg_validator(loader, dest):
     return _validate_asg_name_or_id
 
 
+@cls_validator_wrapper
 def get_subscription_list_validator(dest, model_class):
     def _validate_subscription_list(cmd, namespace):
         val = getattr(namespace, dest, None)
@@ -84,6 +86,7 @@ def get_subscription_list_validator(dest, model_class):
     return _validate_subscription_list
 
 
+@cls_validator_wrapper
 def get_vnet_validator(dest):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
@@ -117,6 +120,7 @@ def _validate_vpn_gateway_generation(namespace):
         raise CLIError('vpn_gateway_generation should not be provided if gateway_type is not Vpn.')
 
 
+@func_validator_wrapper
 def validate_ddos_name_or_id(cmd, namespace):
     if namespace.ddos_protection_plan:
         from msrestazure.tools import is_valid_resource_id, resource_id
@@ -178,11 +182,13 @@ def _generate_lb_id_list_from_names_or_ids(cli_ctx, namespace, prop, child_type)
     setattr(namespace, prop, result)
 
 
+@func_validator_wrapper
 def validate_address_pool_id_list(cmd, namespace):
     _generate_lb_id_list_from_names_or_ids(
         cmd.cli_ctx, namespace, 'load_balancer_backend_address_pool_ids', 'backendAddressPools')
 
 
+@func_validator_wrapper
 def validate_address_pool_name_or_id(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, parse_resource_id
     address_pool = namespace.backend_address_pool
@@ -232,11 +238,13 @@ def read_base_64_file(filename):
             return str(base64_data)
 
 
+@func_validator_wrapper
 def validate_cert(namespace):
     if namespace.cert_data:
         namespace.cert_data = read_base_64_file(namespace.cert_data)
 
 
+@func_validator_wrapper
 def validate_ssl_cert(namespace):
     params = [namespace.cert_data, namespace.cert_password]
     if all([not x for x in params]) and not namespace.key_vault_secret_id:
@@ -263,6 +271,7 @@ def validate_ssl_cert(namespace):
             pass
 
 
+@func_validator_wrapper
 def validate_delegations(cmd, namespace):
     if namespace.delegations:
         Delegation = cmd.get_models('Delegation')
@@ -276,6 +285,7 @@ def validate_delegations(cmd, namespace):
         namespace.delegations = delegations
 
 
+@func_validator_wrapper
 def validate_dns_record_type(namespace):
     tokens = namespace.command.split(' ')
     types = ['a', 'aaaa', 'caa', 'cname', 'mx', 'ns', 'ptr', 'soa', 'srv', 'txt']
@@ -288,6 +298,7 @@ def validate_dns_record_type(namespace):
             return
 
 
+@func_validator_wrapper
 def validate_user_assigned_identity(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
@@ -301,6 +312,7 @@ def validate_user_assigned_identity(cmd, namespace):
         )
 
 
+@func_validator_wrapper
 def validate_express_route_peering(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     circuit = namespace.circuit_name
@@ -324,6 +336,7 @@ def validate_express_route_peering(cmd, namespace):
         raise usage_error
 
 
+@func_validator_wrapper
 def validate_express_route_port(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.express_route_port and not is_valid_resource_id(namespace.express_route_port):
@@ -336,6 +349,7 @@ def validate_express_route_port(cmd, namespace):
         )
 
 
+@func_validator_wrapper
 def validate_virtul_network_gateway(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.hosted_gateway and not is_valid_resource_id(namespace.hosted_gateway):
@@ -348,6 +362,7 @@ def validate_virtul_network_gateway(cmd, namespace):
         )
 
 
+@func_validator_wrapper
 def validate_virtual_hub(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.virtual_hub and not is_valid_resource_id(namespace.virtual_hub):
@@ -360,6 +375,7 @@ def validate_virtual_hub(cmd, namespace):
         )
 
 
+@func_validator_wrapper
 def validate_waf_policy(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.firewall_policy and not is_valid_resource_id(namespace.firewall_policy):
@@ -372,6 +388,7 @@ def validate_waf_policy(cmd, namespace):
         )
 
 
+@cls_validator_wrapper
 def bandwidth_validator_factory(mbps=True):
     def validator(namespace):
         return validate_circuit_bandwidth(namespace, mbps=mbps)
@@ -413,6 +430,7 @@ def validate_circuit_bandwidth(namespace, mbps=True):
         raise usage_error
 
 
+@func_validator_wrapper
 def validate_er_peer_circuit(cmd, namespace):
     from msrestazure.tools import resource_id, is_valid_resource_id
 
@@ -435,11 +453,13 @@ def validate_er_peer_circuit(cmd, namespace):
     namespace.peer_circuit = peer_id
 
 
+@func_validator_wrapper
 def validate_inbound_nat_rule_id_list(cmd, namespace):
     _generate_lb_id_list_from_names_or_ids(
         cmd.cli_ctx, namespace, 'load_balancer_inbound_nat_rule_ids', 'inboundNatRules')
 
 
+@func_validator_wrapper
 def validate_inbound_nat_rule_name_or_id(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id
     rule_name = namespace.inbound_nat_rule
@@ -455,6 +475,7 @@ def validate_inbound_nat_rule_name_or_id(cmd, namespace):
             cmd.cli_ctx, namespace, 'inboundNatRules', rule_name)
 
 
+@func_validator_wrapper
 def validate_ip_tags(cmd, namespace):
     ''' Extracts multiple space-separated tags in TYPE=VALUE format '''
     IpTag = cmd.get_models('IpTag')
@@ -466,6 +487,7 @@ def validate_ip_tags(cmd, namespace):
         namespace.ip_tags = ip_tags
 
 
+@func_validator_wrapper
 def validate_frontend_ip_configs(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id
     if namespace.frontend_ip_configurations:
@@ -490,6 +512,7 @@ def validate_local_gateway(cmd, namespace):
             type='localNetworkGateways')
 
 
+@func_validator_wrapper
 def validate_match_variables(cmd, namespace):
     if not namespace.match_variables:
         return
@@ -506,11 +529,13 @@ def validate_match_variables(cmd, namespace):
     namespace.match_variables = variables
 
 
+@func_validator_wrapper
 def validate_metadata(namespace):
     if namespace.metadata:
         namespace.metadata = dict(x.split('=', 1) for x in namespace.metadata)
 
 
+@func_validator_wrapper
 def validate_peering_type(namespace):
     if namespace.peering_type and namespace.peering_type == 'MicrosoftPeering':
 
@@ -530,6 +555,7 @@ def validate_public_ip_prefix(cmd, namespace):
             type='publicIPPrefixes')
 
 
+@func_validator_wrapper
 def validate_nat_gateway(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.nat_gateway and not is_valid_resource_id(namespace.nat_gateway):
@@ -541,11 +567,13 @@ def validate_nat_gateway(cmd, namespace):
             type='natGateways')
 
 
+@func_validator_wrapper
 def validate_private_ip_address(namespace):
     if namespace.private_ip_address and hasattr(namespace, 'private_ip_address_allocation'):
         namespace.private_ip_address_allocation = 'static'
 
 
+@func_validator_wrapper
 def validate_route_filter(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.route_filter:
@@ -558,6 +586,7 @@ def validate_route_filter(cmd, namespace):
                 name=namespace.route_filter)
 
 
+@cls_validator_wrapper
 def get_public_ip_validator(has_type_field=False, allow_none=False, allow_new=False,
                             default_none=False):
     """ Retrieves a validator for public IP address. Accepting all defaults will perform a check
@@ -592,6 +621,7 @@ def get_public_ip_validator(has_type_field=False, allow_none=False, allow_new=Fa
     return complex_validator_with_type if has_type_field else simple_validator
 
 
+@cls_validator_wrapper
 def get_subnet_validator(has_type_field=False, allow_none=False, allow_new=False,
                          default_none=False):
     from msrestazure.tools import is_valid_resource_id, resource_id
@@ -635,6 +665,7 @@ def get_subnet_validator(has_type_field=False, allow_none=False, allow_new=False
     return complex_validator_with_type if has_type_field else simple_validator
 
 
+@cls_validator_wrapper
 def get_nsg_validator(has_type_field=False, allow_none=False, allow_new=False, default_none=False):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
@@ -658,6 +689,7 @@ def get_nsg_validator(has_type_field=False, allow_none=False, allow_new=False, d
     return complex_validator_with_type if has_type_field else simple_validator
 
 
+@func_validator_wrapper
 def validate_service_endpoint_policy(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.service_endpoint_policy:
@@ -674,6 +706,7 @@ def validate_service_endpoint_policy(cmd, namespace):
         namespace.service_endpoint_policy = policy_ids
 
 
+@cls_validator_wrapper
 def get_servers_validator(camel_case=False):
     def validate_servers(namespace):
         servers = []
@@ -688,6 +721,7 @@ def get_servers_validator(camel_case=False):
     return validate_servers
 
 
+@func_validator_wrapper
 def validate_subresource_list(cmd, namespace):
     if namespace.target_resources:
         SubResource = cmd.get_models('SubResource')
@@ -697,6 +731,7 @@ def validate_subresource_list(cmd, namespace):
         namespace.target_resources = subresources
 
 
+@func_validator_wrapper
 def validate_target_listener(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.target_listener and not is_valid_resource_id(namespace.target_listener):
@@ -710,6 +745,7 @@ def validate_target_listener(cmd, namespace):
             child_name_1=namespace.target_listener)
 
 
+@func_validator_wrapper
 def validate_private_dns_zone(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.private_dns_zone and not is_valid_resource_id(namespace.private_dns_zone):
@@ -746,7 +782,7 @@ def get_virtual_network_validator(has_type_field=False, allow_none=False, allow_
 
 
 # COMMAND NAMESPACE VALIDATORS
-
+@func_validator_wrapper
 def process_ag_listener_create_namespace(cmd, namespace):  # pylint: disable=unused-argument
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.frontend_ip and not is_valid_resource_id(namespace.frontend_ip):
@@ -771,6 +807,7 @@ def process_ag_listener_create_namespace(cmd, namespace):  # pylint: disable=unu
         )
 
 
+@func_validator_wrapper
 def process_ag_http_settings_create_namespace(cmd, namespace):  # pylint: disable=unused-argument
     from msrestazure.tools import is_valid_resource_id
     if namespace.probe and not is_valid_resource_id(namespace.probe):
@@ -790,6 +827,7 @@ def process_ag_http_settings_create_namespace(cmd, namespace):  # pylint: disabl
         namespace.root_certs = [_validate_name_or_id(x) for x in namespace.root_certs]
 
 
+@func_validator_wrapper
 def process_ag_rule_create_namespace(cmd, namespace):  # pylint: disable=unused-argument
     from msrestazure.tools import is_valid_resource_id
     if namespace.address_pool and not is_valid_resource_id(namespace.address_pool):
@@ -817,11 +855,13 @@ def process_ag_rule_create_namespace(cmd, namespace):  # pylint: disable=unused-
             cmd.cli_ctx, namespace, 'rewriteRuleSets', namespace.rewrite_rule_set)
 
 
+@func_validator_wrapper
 def process_ag_ssl_policy_set_namespace(namespace):
     if namespace.disabled_ssl_protocols and getattr(namespace, 'clear', None):
         raise ValueError('incorrect usage: --disabled-ssl-protocols PROTOCOL [...] | --clear')
 
 
+@func_validator_wrapper
 def process_ag_url_path_map_create_namespace(cmd, namespace):  # pylint: disable=unused-argument
     from msrestazure.tools import is_valid_resource_id
     if namespace.default_address_pool and not is_valid_resource_id(namespace.default_address_pool):
@@ -852,6 +892,7 @@ def process_ag_url_path_map_create_namespace(cmd, namespace):  # pylint: disable
         process_ag_url_path_map_rule_create_namespace(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_ag_url_path_map_rule_create_namespace(cmd, namespace):  # pylint: disable=unused-argument
     from msrestazure.tools import is_valid_resource_id
     if namespace.address_pool and not is_valid_resource_id(namespace.address_pool):
@@ -872,6 +913,7 @@ def process_ag_url_path_map_rule_create_namespace(cmd, namespace):  # pylint: di
             cmd.cli_ctx, namespace, 'rewriteRuleSets', namespace.rewrite_rule_set)
 
 
+@func_validator_wrapper
 def process_ag_create_namespace(cmd, namespace):
     get_default_location_from_resource_group(cmd, namespace)
     get_servers_validator(camel_case=True)(namespace)
@@ -890,11 +932,13 @@ def process_ag_create_namespace(cmd, namespace):
     validate_user_assigned_identity(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_auth_create_namespace(cmd, namespace):
     ExpressRouteCircuitAuthorization = cmd.get_models('ExpressRouteCircuitAuthorization')
     namespace.authorization_parameters = ExpressRouteCircuitAuthorization()
 
 
+@func_validator_wrapper
 def process_lb_create_namespace(cmd, namespace):
     get_default_location_from_resource_group(cmd, namespace)
     validate_tags(namespace)
@@ -925,6 +969,7 @@ def process_lb_create_namespace(cmd, namespace):
         namespace.virtual_network_name = None
 
 
+@func_validator_wrapper
 def process_lb_frontend_ip_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.subnet and namespace.public_ip_address:
@@ -947,6 +992,7 @@ def process_lb_frontend_ip_namespace(cmd, namespace):
         get_public_ip_validator()(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_cross_region_lb_create_namespace(cmd, namespace):
     get_default_location_from_resource_group(cmd, namespace)
     validate_tags(namespace)
@@ -959,6 +1005,7 @@ def process_cross_region_lb_create_namespace(cmd, namespace):
             'specify --public-ip-dns-name only if creating a new public IP address.')
 
 
+@func_validator_wrapper
 def process_cross_region_lb_frontend_ip_namespace(cmd, namespace):
     from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 
@@ -974,6 +1021,7 @@ def process_cross_region_lb_frontend_ip_namespace(cmd, namespace):
     get_public_ip_validator()(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_local_gateway_create_namespace(cmd, namespace):
     ns = namespace
     get_default_location_from_resource_group(cmd, ns)
@@ -985,6 +1033,7 @@ def process_local_gateway_create_namespace(cmd, namespace):
             'incorrect usage: --bgp-peering-address IP --asn ASN [--peer-weight WEIGHT]')
 
 
+@func_validator_wrapper
 def process_nic_create_namespace(cmd, namespace):
     get_default_location_from_resource_group(cmd, namespace)
     validate_tags(namespace)
@@ -1000,6 +1049,7 @@ def process_nic_create_namespace(cmd, namespace):
     get_nsg_validator(has_type_field=False, allow_none=True, default_none=True)(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_public_ip_create_namespace(cmd, namespace):
     get_default_location_from_resource_group(cmd, namespace)
     validate_public_ip_prefix(cmd, namespace)
@@ -1016,11 +1066,13 @@ def _inform_coming_breaking_change_for_public_ip(namespace):
                        ' For non-zonal regions, you will get a non zone-redundant IP indicated by zones:[].')
 
 
+@func_validator_wrapper
 def process_route_table_create_namespace(cmd, namespace):
     get_default_location_from_resource_group(cmd, namespace)
     validate_tags(namespace)
 
 
+@func_validator_wrapper
 def process_tm_endpoint_create_namespace(cmd, namespace):
     from azure.mgmt.trafficmanager import TrafficManagerManagementClient
 
@@ -1081,6 +1133,7 @@ def process_tm_endpoint_create_namespace(cmd, namespace):
         raise CLIError(error_message)
 
 
+@func_validator_wrapper
 def process_vnet_create_namespace(cmd, namespace):
     get_default_location_from_resource_group(cmd, namespace)
     validate_ddos_name_or_id(cmd, namespace)
@@ -1103,6 +1156,7 @@ def process_vnet_create_namespace(cmd, namespace):
         namespace.subnet_prefix = [subnet_prefix] if cmd.supported_api_version(min_api='2018-08-01') else subnet_prefix
 
 
+@func_validator_wrapper
 def process_vnet_gateway_create_namespace(cmd, namespace):
     ns = namespace
     get_default_location_from_resource_group(cmd, ns)
@@ -1126,6 +1180,7 @@ def process_vnet_gateway_create_namespace(cmd, namespace):
             'incorrect usage: --asn ASN [--peer-weight WEIGHT --bgp-peering-address IP ]')
 
 
+@func_validator_wrapper
 def process_vnet_gateway_update_namespace(cmd, namespace):
     ns = namespace
     get_virtual_network_validator()(cmd, ns)
@@ -1137,6 +1192,7 @@ def process_vnet_gateway_update_namespace(cmd, namespace):
                        'public IPs to create an active-active gateway.')
 
 
+@func_validator_wrapper
 def process_vpn_connection_create_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     get_default_location_from_resource_group(cmd, namespace)
@@ -1185,6 +1241,7 @@ def process_vpn_connection_create_namespace(cmd, namespace):
         namespace.connection_type = 'Vnet2Vnet'
 
 
+@cls_validator_wrapper
 def load_cert_file(param_name):
     def load_cert_validator(namespace):
         attr = getattr(namespace, param_name)
@@ -1194,6 +1251,7 @@ def load_cert_file(param_name):
     return load_cert_validator
 
 
+@func_validator_wrapper
 def get_network_watcher_from_vm(cmd, namespace):
     from msrestazure.tools import parse_resource_id
 
@@ -1211,6 +1269,7 @@ def get_network_watcher_from_resource(cmd, namespace):
     get_network_watcher_from_location(remove=True)(cmd, namespace)
 
 
+@cls_validator_wrapper
 def get_network_watcher_from_location(remove=False, watcher_name='watcher_name',
                                       rg_name='watcher_rg'):
     def _validator(cmd, namespace):
@@ -1307,6 +1366,7 @@ def process_nw_cm_v2_create_namespace(cmd, namespace):
     return get_network_watcher_from_location()(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_nw_cm_create_namespace(cmd, namespace):
     # V2 parameter set
     if namespace.source_resource is None:
@@ -1316,6 +1376,7 @@ def process_nw_cm_create_namespace(cmd, namespace):
     return process_nw_cm_v1_create_namespace(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_nw_cm_v2_endpoint_namespace(cmd, namespace):
     if hasattr(namespace, 'filter_type') or hasattr(namespace, 'filter_items'):
         filter_type, filter_items = namespace.filter_type, namespace.filter_items
@@ -1331,14 +1392,17 @@ def process_nw_cm_v2_endpoint_namespace(cmd, namespace):
     return get_network_watcher_from_location()(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_nw_cm_v2_test_configuration_namespace(cmd, namespace):
     return get_network_watcher_from_location()(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_nw_cm_v2_test_group(cmd, namespace):
     return get_network_watcher_from_location()(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_nw_cm_v2_output_namespace(cmd, namespace):
     v2_output_optional_parameter_set = ['workspace_id']
     if hasattr(namespace, 'out_type') and namespace.out_type is not None:
@@ -1399,6 +1463,7 @@ class NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction(argparse._Appe
         namespace.http_request_headers.append(request_header)
 
 
+@func_validator_wrapper
 def process_nw_test_connectivity_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
 
@@ -1438,6 +1503,7 @@ def process_nw_test_connectivity_namespace(cmd, namespace):
         namespace.headers = headers
 
 
+@func_validator_wrapper
 def process_nw_flow_log_create_namespace(cmd, namespace):
     """
     Flow Log is the sub-resource of Network Watcher, they must be in the same region and subscription.
@@ -1498,6 +1564,7 @@ def process_nw_flow_log_create_namespace(cmd, namespace):
     validate_tags(namespace)
 
 
+@func_validator_wrapper
 def process_nw_flow_log_set_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     if namespace.storage_account and not is_valid_resource_id(namespace.storage_account):
@@ -1518,6 +1585,7 @@ def process_nw_flow_log_set_namespace(cmd, namespace):
     process_nw_flow_log_show_namespace(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_nw_flow_log_show_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     from azure.cli.core.commands.arm import get_arm_resource_by_id
@@ -1540,6 +1608,7 @@ def process_nw_flow_log_show_namespace(cmd, namespace):
         raise CLIError('usage error: --nsg NSG | --location NETWORK_WATCHER_LOCATION --name FLOW_LOW_NAME')
 
 
+@func_validator_wrapper
 def process_nw_topology_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
     SubResource = cmd.get_models('SubResource')
@@ -1613,6 +1682,7 @@ def process_nw_topology_namespace(cmd, namespace):
         remove=True, watcher_name='network_watcher_name', rg_name='resource_group_name')(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_nw_packet_capture_create_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     get_network_watcher_from_vm(cmd, namespace)
@@ -1649,6 +1719,7 @@ def process_nw_packet_capture_create_namespace(cmd, namespace):
         namespace.file_path = file_path
 
 
+@func_validator_wrapper
 def process_nw_troubleshooting_start_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     storage_usage = CLIError('usage error: --storage-account NAME_OR_ID [--storage-path PATH]')
@@ -1666,6 +1737,7 @@ def process_nw_troubleshooting_start_namespace(cmd, namespace):
     process_nw_troubleshooting_show_namespace(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_nw_troubleshooting_show_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     resource_usage = CLIError('usage error: --resource ID | --resource NAME --resource-type TYPE '
@@ -1691,6 +1763,7 @@ def process_nw_troubleshooting_show_namespace(cmd, namespace):
     get_network_watcher_from_resource(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_nw_config_diagnostic_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
@@ -1738,6 +1811,7 @@ def process_nw_config_diagnostic_namespace(cmd, namespace):
     get_network_watcher_from_resource(cmd, namespace)
 
 
+@func_validator_wrapper
 def process_lb_outbound_rule_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id
 
@@ -1749,6 +1823,7 @@ def process_lb_outbound_rule_namespace(cmd, namespace):
                 cmd.cli_ctx, namespace, 'backendAddressPools', namespace.backend_address_pool)
 
 
+@func_validator_wrapper
 def process_list_delegations_namespace(cmd, namespace):
     if not namespace.resource_group_name and not namespace.location:
         raise CLIError('usage error: --location LOCATION | --resource-group NAME [--location LOCATION]')
@@ -1757,6 +1832,7 @@ def process_list_delegations_namespace(cmd, namespace):
         get_default_location_from_resource_group(cmd, namespace)
 
 
+@func_validator_wrapper
 def validate_ag_address_pools(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
     address_pools = namespace.app_gateway_backend_address_pools
@@ -1782,6 +1858,7 @@ def validate_ag_address_pools(cmd, namespace):
     namespace.app_gateway_backend_address_pools = ids
 
 
+@func_validator_wrapper
 def validate_custom_error_pages(namespace):
     if not namespace.custom_error_pages:
         return
@@ -1796,6 +1873,7 @@ def validate_custom_error_pages(namespace):
     namespace.custom_error_pages = values
 
 
+@func_validator_wrapper
 def validate_custom_headers(namespace):
     if not namespace.monitor_custom_headers:
         return
@@ -1811,6 +1889,7 @@ def validate_custom_headers(namespace):
     namespace.monitor_custom_headers = values
 
 
+@func_validator_wrapper
 def validate_status_code_ranges(namespace):
     if not namespace.status_code_ranges:
         return
@@ -1832,6 +1911,7 @@ def validate_status_code_ranges(namespace):
     namespace.status_code_ranges = values
 
 
+@func_validator_wrapper
 def validate_subnet_ranges(namespace):
     if not namespace.subnets:
         return
@@ -1879,6 +1959,7 @@ class WafConfigExclusionAction(argparse.Action):
         ))
 
 
+@cls_validator_wrapper
 def get_header_configuration_validator(dest):
     def validator(namespace):
         values = getattr(namespace, dest, None)
@@ -1897,6 +1978,7 @@ def get_header_configuration_validator(dest):
     return validator
 
 
+@func_validator_wrapper
 def process_private_link_resource_id_argument(cmd, namespace):
     if all([namespace.resource_group_name,
             namespace.name,
@@ -1921,6 +2003,7 @@ def process_private_link_resource_id_argument(cmd, namespace):
     del namespace.id
 
 
+@func_validator_wrapper
 def process_private_endpoint_connection_id_argument(cmd, namespace):
     from azure.cli.core.util import parse_proxy_resource_id
     if all([namespace.resource_group_name,
@@ -1946,6 +2029,7 @@ def process_private_endpoint_connection_id_argument(cmd, namespace):
     del namespace.connection_id
 
 
+@func_validator_wrapper
 def process_vnet_name_or_id(cmd, namespace):
     from azure.mgmt.core.tools import is_valid_resource_id, resource_id
     if namespace.vnet and not is_valid_resource_id(namespace.vnet):
@@ -1957,6 +2041,7 @@ def process_vnet_name_or_id(cmd, namespace):
             name=namespace.vnet)
 
 
+@func_validator_wrapper
 def process_appgw_waf_policy_update(cmd, namespace):    # pylint: disable=unused-argument
     rule_group_name = namespace.rule_group_name
     rules = namespace.rules
