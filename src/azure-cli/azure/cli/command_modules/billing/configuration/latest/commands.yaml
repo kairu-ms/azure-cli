@@ -1,0 +1,1612 @@
+az:
+  command-groups:
+    billing:
+      command-groups:
+        account:
+          commands:
+            list:
+              arguments:
+                expand:
+                  help: May be used to expand the soldTo, invoice sections and billing
+                    profiles.
+                  options:
+                  - --expand
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_account
+              full-name: billing account list
+              help: List the billing accounts that a user has access to.
+              operation: azure.cli.command_modules.billing.custom#billing_account_list
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+                expand:
+                  help: May be used to expand the soldTo, invoice sections and billing
+                    profiles.
+                  options:
+                  - --expand
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_account
+              full-name: billing account show
+              help: Get a billing account by its ID.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_account_show
+            update:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+                billing_profiles_value:
+                  help: 'The billing profiles associated with the billing account.
+                    Expected value: json-string/@json-file.'
+                  options:
+                  - --billing-profiles-value
+                departments:
+                  help: 'The departments associated to the enrollment. Expected value:
+                    json-string/@json-file.'
+                  options:
+                  - --departments
+                display_name:
+                  help: The billing account name.
+                  options:
+                  - --display-name
+                enrollment_accounts:
+                  help: 'The accounts associated to the enrollment. Expected value:
+                    json-string/@json-file.'
+                  options:
+                  - --enrollment-accounts
+                sold_to:
+                  help:
+                    long-summary: 'Usage: --sold-to first-name=XX last-name=XX company-name=XX
+                      address-line1=XX address-line2=XX address-line3=XX city=XX district=XX
+                      region=XX country=XX postal-code=XX email=XX phone-number=XX
+
+                      '
+                    short-summary: The address of the individual or organization that
+                      is responsible for the billing account.
+                  nargs: '*'
+                  options:
+                  - --sold-to
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_account
+              full-name: billing account update
+              help: Update the properties of a billing account. Currently, displayName
+                and address can be updated. The operation is supported only for billing
+                accounts with agreement type Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_account_update
+              resource-type: MGMT_BILLING
+              support-no-wait: true
+            wait:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+                created:
+                  arg-group: Wait Condition
+                  help: wait until created with 'provisioningState' at 'Succeeded'
+                  options:
+                  - --created
+                custom:
+                  arg-group: Wait Condition
+                  help: Wait until the condition satisfies a custom JMESPath query.
+                    E.g. provisioningState!='InProgress', instanceView.statuses[?code=='PowerState/running']
+                  options:
+                  - --custom
+                deleted:
+                  arg-group: Wait Condition
+                  help: wait until deleted
+                  options:
+                  - --deleted
+                exists:
+                  arg-group: Wait Condition
+                  help: wait until the resource exists
+                  options:
+                  - --exists
+                expand:
+                  help: May be used to expand the soldTo, invoice sections and billing
+                    profiles.
+                  options:
+                  - --expand
+                interval:
+                  arg-group: Wait Condition
+                  default: 30
+                  help: polling interval in seconds
+                  options:
+                  - --interval
+                timeout:
+                  arg-group: Wait Condition
+                  default: 3600
+                  help: maximum wait in seconds
+                  options:
+                  - --timeout
+                updated:
+                  arg-group: Wait Condition
+                  help: wait until updated with provisioningState at 'Succeeded'
+                  options:
+                  - --updated
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_account
+              full-name: billing account wait
+              help: Place the CLI in a waiting state until a condition of the billing
+                account is met.
+              resource-type: MGMT_BILLING
+              wait-operation: azure.cli.command_modules.billing.custom#billing_account_show
+          full-name: billing account
+          help: billing account
+          preview: true
+        agreement:
+          commands:
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                expand:
+                  help: May be used to expand the participants.
+                  options:
+                  - --expand
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_agreement
+              full-name: billing agreement list
+              help: List the agreements for a billing account.
+              operation: azure.cli.command_modules.billing.custom#billing_agreement_list
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                expand:
+                  help: May be used to expand the participants.
+                  options:
+                  - --expand
+                name:
+                  help: The ID that uniquely identifies an agreement.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_agreement
+              full-name: billing agreement show
+              help: Get an agreement by ID.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_agreement_show
+          full-name: billing agreement
+          help: Display billing agreement
+          preview: true
+        balance:
+          commands:
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_balance
+              full-name: billing balance show
+              help: The available credit balance for a billing profile. This is the
+                balance that can be used for pay now to settle due or past due invoices.
+                The operation is supported only for billing accounts with agreement
+                type Microsoft Customer Agreement.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_balance_show
+          full-name: billing balance
+          help: billing balance
+          preview: true
+        customer:
+          commands:
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                filter_:
+                  help: May be used to filter the list of customers.
+                  options:
+                  - --filter
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+                search:
+                  help: Used for searching customers by their name. Any customer with
+                    name containing the search text will be included in the response
+                  options:
+                  - --search
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_customer
+              full-name: billing customer list
+              help: List the customers that are billed to a billing account. The operation
+                is supported only for billing accounts with agreement type Microsoft
+                Partner Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_customer_list
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                customer_name:
+                  help: The ID that uniquely identifies a customer.
+                  options:
+                  - --customer-name
+                  - --name
+                  - -n
+                  required: true
+                expand:
+                  help: May be used to expand enabledAzurePlans and resellers
+                  options:
+                  - --expand
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_customer
+              full-name: billing customer show
+              help: Get a customer by its ID. The operation is supported only for
+                billing accounts with agreement type Microsoft Partner Agreement.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_customer_show
+          full-name: billing customer
+          help: billing customer
+          preview: true
+        enrollment-account:
+          commands:
+            list:
+              client-factory: azure.cli.command_modules.billing._client_factory#enrollment_accounts_mgmt_client_factory
+              exception-handler: azure.cli.command_modules.billing._exception_handler#billing_exception_handler
+              full-name: billing enrollment-account list
+              help: Lists the enrollment accounts the caller has access to
+              operation: azure.mgmt.billing.operations#EnrollmentAccountsOperations.list
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                name:
+                  help: name of the enrollment account
+                  options:
+                  - --name
+                  - -n
+                  required: true
+              client-factory: azure.cli.command_modules.billing._client_factory#enrollment_accounts_mgmt_client_factory
+              exception-handler: azure.cli.command_modules.billing._exception_handler#billing_exception_handler
+              full-name: billing enrollment-account show
+              help: Gets a enrollment account by name
+              resource-type: MGMT_BILLING
+              show-operation: azure.mgmt.billing.operations#EnrollmentAccountsOperations.get
+          full-name: billing enrollment-account
+          help: Get enrollment accounts.
+        instruction:
+          commands:
+            create:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                amount:
+                  help: The amount budgeted for this billing instruction.
+                  options:
+                  - --amount
+                creation_date:
+                  help: The date this billing instruction was created.
+                  options:
+                  - --creation-date
+                end_date:
+                  help: The date this billing instruction is no longer in effect.
+                  options:
+                  - --end-date
+                name:
+                  help: Instruction Name.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+                  required: true
+                start_date:
+                  help: The date this billing instruction goes into effect.
+                  options:
+                  - --start-date
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_instruction
+              full-name: billing instruction create
+              help: Create an instruction. These are custom billing instructions and
+                are only applicable for certain customers.
+              operation: azure.cli.command_modules.billing.custom#billing_instruction_create
+              resource-type: MGMT_BILLING
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_instruction
+              full-name: billing instruction list
+              help: List the instructions by billing profile id.
+              operation: azure.cli.command_modules.billing.custom#billing_instruction_list
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                name:
+                  help: Instruction Name.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_instruction
+              full-name: billing instruction show
+              help: Show the instruction by name. These are custom billing instructions
+                and are only applicable for certain customers.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_instruction_show
+            update:
+              arguments:
+                amount:
+                  help: The amount budgeted for this billing instruction.
+                  options:
+                  - --amount
+                billing_account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                billing_profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+                  required: true
+                creation_date:
+                  help: The date this billing instruction was created.
+                  options:
+                  - --creation-date
+                end_date:
+                  help: The date this billing instruction is no longer in effect.
+                  options:
+                  - --end-date
+                instruction_name:
+                  help: Instruction Name.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+                start_date:
+                  help: The date this billing instruction goes into effect.
+                  options:
+                  - --start-date
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_instruction
+              full-name: billing instruction update
+              generic-update:
+                custom-function-operation: azure.cli.command_modules.billing.manual.custom#billing_instruction_update
+                getter-operation: azure.mgmt.billing.operations#InstructionsOperations.get
+                setter-arg-name: parameters
+                setter-operation: azure.mgmt.billing.operations#InstructionsOperations.put
+              help: Update an instruction. These are custom billing instructions and
+                are only applicable for certain customers.
+              resource-type: MGMT_BILLING
+          full-name: billing instruction
+          help: Manage billing instruction
+          preview: true
+        invoice:
+          command-groups:
+            section:
+              commands:
+                create:
+                  arguments:
+                    account_name:
+                      help: The ID that uniquely identifies a billing account.
+                      options:
+                      - --account-name
+                      required: true
+                    display_name:
+                      help: The name of the invoice section.
+                      options:
+                      - --display-name
+                    invoice_section_name:
+                      help: The ID that uniquely identifies an invoice section.
+                      options:
+                      - --invoice-section-name
+                      - --name
+                      - -n
+                      required: true
+                    labels:
+                      help: 'Dictionary of metadata associated with the invoice section.
+                        Expect value: KEY1=VALUE1 KEY2=VALUE2 ...'
+                      nargs: '*'
+                      options:
+                      - --labels
+                    profile_name:
+                      help: The ID that uniquely identifies a billing profile.
+                      options:
+                      - --profile-name
+                      required: true
+                  client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_invoice_section
+                  full-name: billing invoice section create
+                  help: Creates or updates an invoice section. The operation is supported
+                    only for billing accounts with agreement type Microsoft Customer
+                    Agreement.
+                  operation: azure.cli.command_modules.billing.custom#billing_invoice_section_create
+                  resource-type: MGMT_BILLING
+                  support-no-wait: true
+                list:
+                  arguments:
+                    account_name:
+                      help: The ID that uniquely identifies a billing account.
+                      options:
+                      - --account-name
+                      required: true
+                    profile_name:
+                      help: The ID that uniquely identifies a billing profile.
+                      options:
+                      - --profile-name
+                      required: true
+                  client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_invoice_section
+                  full-name: billing invoice section list
+                  help: List the invoice sections that a user has access to. The operation
+                    is supported only for billing accounts with agreement type Microsoft
+                    Customer Agreement.
+                  operation: azure.cli.command_modules.billing.custom#billing_invoice_section_list
+                  resource-type: MGMT_BILLING
+                show:
+                  arguments:
+                    account_name:
+                      help: The ID that uniquely identifies a billing account.
+                      options:
+                      - --account-name
+                      required: true
+                    invoice_section_name:
+                      help: The ID that uniquely identifies an invoice section.
+                      options:
+                      - --invoice-section-name
+                      - --name
+                      - -n
+                      required: true
+                    profile_name:
+                      help: The ID that uniquely identifies a billing profile.
+                      options:
+                      - --profile-name
+                      required: true
+                  client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_invoice_section
+                  full-name: billing invoice section show
+                  help: Get an invoice section by its ID. The operation is supported
+                    only for billing accounts with agreement type Microsoft Customer
+                    Agreement.
+                  resource-type: MGMT_BILLING
+                  show-operation: azure.cli.command_modules.billing.custom#billing_invoice_section_show
+                update:
+                  arguments:
+                    account_name:
+                      help: The ID that uniquely identifies a billing account.
+                      options:
+                      - --account-name
+                      required: true
+                    display_name:
+                      help: The name of the invoice section.
+                      options:
+                      - --display-name
+                    invoice_section_name:
+                      help: The ID that uniquely identifies an invoice section.
+                      options:
+                      - --invoice-section-name
+                      - --name
+                      - -n
+                      required: true
+                    labels:
+                      help: 'Dictionary of metadata associated with the invoice section.
+                        Expect value: KEY1=VALUE1 KEY2=VALUE2 ...'
+                      nargs: '*'
+                      options:
+                      - --labels
+                    profile_name:
+                      help: The ID that uniquely identifies a billing profile.
+                      options:
+                      - --profile-name
+                      required: true
+                  client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_invoice_section
+                  full-name: billing invoice section update
+                  help: Creates or updates an invoice section. The operation is supported
+                    only for billing accounts with agreement type Microsoft Customer
+                    Agreement.
+                  operation: azure.cli.command_modules.billing.custom#billing_invoice_section_update
+                  resource-type: MGMT_BILLING
+                  support-no-wait: true
+                wait:
+                  arguments:
+                    account_name:
+                      help: The ID that uniquely identifies a billing account.
+                      options:
+                      - --account-name
+                      required: true
+                    created:
+                      arg-group: Wait Condition
+                      help: wait until created with 'provisioningState' at 'Succeeded'
+                      options:
+                      - --created
+                    custom:
+                      arg-group: Wait Condition
+                      help: Wait until the condition satisfies a custom JMESPath query.
+                        E.g. provisioningState!='InProgress', instanceView.statuses[?code=='PowerState/running']
+                      options:
+                      - --custom
+                    deleted:
+                      arg-group: Wait Condition
+                      help: wait until deleted
+                      options:
+                      - --deleted
+                    exists:
+                      arg-group: Wait Condition
+                      help: wait until the resource exists
+                      options:
+                      - --exists
+                    interval:
+                      arg-group: Wait Condition
+                      default: 30
+                      help: polling interval in seconds
+                      options:
+                      - --interval
+                    invoice_section_name:
+                      help: The ID that uniquely identifies an invoice section.
+                      options:
+                      - --invoice-section-name
+                      - --name
+                      - -n
+                      required: true
+                    profile_name:
+                      help: The ID that uniquely identifies a billing profile.
+                      options:
+                      - --profile-name
+                      required: true
+                    timeout:
+                      arg-group: Wait Condition
+                      default: 3600
+                      help: maximum wait in seconds
+                      options:
+                      - --timeout
+                    updated:
+                      arg-group: Wait Condition
+                      help: wait until updated with provisioningState at 'Succeeded'
+                      options:
+                      - --updated
+                  client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_invoice_section
+                  full-name: billing invoice section wait
+                  help: Place the CLI in a waiting state until a condition of the
+                    billing invoice section is met.
+                  resource-type: MGMT_BILLING
+                  wait-operation: azure.cli.command_modules.billing.custom#billing_invoice_section_show
+              full-name: billing invoice section
+              help: billing invoice section
+              preview: true
+          commands:
+            download:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account
+                  options:
+                  - --account-name
+                download_token:
+                  help: The download token with document source and document ID
+                  options:
+                  - --download-token
+                download_urls:
+                  help: Space-separated list of download urls for individual
+                  options:
+                  - --download-urls
+                invoice_name:
+                  help: The ID that uniquely identifies an invoice
+                  options:
+                  - --invoice-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_invoice
+              full-name: billing invoice download
+              help: Get URL to download invoice
+              operation: azure.cli.command_modules.billing.custom#billing_invoice_download
+              preview: true
+              resource-type: MGMT_BILLING
+              validator: azure.cli.command_modules.billing.manual._validators#billing_invoice_download_validator
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                period_end_date:
+                  help: The end date to fetch the invoices. The date should be specified
+                    in MM-DD-YYYY format.
+                  options:
+                  - --period-end-date
+                  required: true
+                period_start_date:
+                  help: The start date to fetch the invoices. The date should be specified
+                    in MM-DD-YYYY format.
+                  options:
+                  - --period-start-date
+                  required: true
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_invoice
+              full-name: billing invoice list
+              help: List the invoices for a subscription.
+              operation: azure.cli.command_modules.billing.custom#billing_invoice_list
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                by_subscription:
+                  help: When provided, it must work with --invoice-name to get an
+                    invoice by subscription ID and invoice ID
+                  options:
+                  - --by-subscription
+                name:
+                  help: The ID that uniquely identifies an invoice.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_invoice
+              full-name: billing invoice show
+              help: Get an invoice. The operation is supported for billing accounts
+                with agreement type Microsoft Partner Agreement or Microsoft Customer
+                Agreement.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_invoice_show
+              validator: azure.cli.command_modules.billing.manual._validators#billing_invoice_show_validator
+          full-name: billing invoice
+          help: Get billing invoices for a subscription.
+        period:
+          commands:
+            list:
+              arguments:
+                filter:
+                  help: May be used to filter billing periods by billingPeriodEndDate.
+                    The filter supports 'eq', 'lt', 'gt', 'le', 'ge', and 'and'. It
+                    does not currently support 'ne', 'or', or 'not'.
+                  options:
+                  - --filter
+                skiptoken:
+                  help: Skiptoken is only used if a previous operation returned a
+                    partial result. If a previous response contains a nextLink element,
+                    the value of the nextLink element will include a skiptoken parameter
+                    that specifies a starting point to use for subsequent calls.
+                  options:
+                  - --skiptoken
+                top:
+                  help: May be used to limit the number of results to the most recent
+                    N billing periods.
+                  options:
+                  - --top
+              client-factory: azure.cli.command_modules.billing._client_factory#billing_periods_mgmt_client_factory
+              exception-handler: azure.cli.command_modules.billing._exception_handler#billing_exception_handler
+              full-name: billing period list
+              help:
+                long-summary: This is only supported for Azure Web-Direct subscriptions.
+                  Other subscription types which were not purchased directly through
+                  the Azure web portal are not supported through this preview API.
+                short-summary: Lists the available billing periods for a subscription
+                  in reverse chronological order
+              operation: azure.mgmt.billing.operations#BillingPeriodsOperations.list
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                billing_period_name:
+                  help: name of the billing period
+                  options:
+                  - --name
+                  - -n
+                  required: true
+              client-factory: azure.cli.command_modules.billing._client_factory#billing_periods_mgmt_client_factory
+              exception-handler: azure.cli.command_modules.billing._exception_handler#billing_exception_handler
+              full-name: billing period show
+              help:
+                long-summary: This is only supported for Azure Web-Direct subscriptions.
+                  Other subscription types which were not purchased directly through
+                  the Azure web portal are not supported through this preview API.
+                short-summary: Gets a named billing period
+              resource-type: MGMT_BILLING
+              show-operation: azure.mgmt.billing.operations#BillingPeriodsOperations.get
+          full-name: billing period
+          help: Get billing periods for a subscription.
+        permission:
+          commands:
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                customer_name:
+                  help: The ID that uniquely identifies a customer.
+                  options:
+                  - --customer-name
+                invoice_section_name:
+                  help: The ID that uniquely identifies an invoice section.
+                  options:
+                  - --invoice-section-name
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_permission
+              full-name: billing permission list
+              help: List the billing permissions the caller has on a billing account.
+              operation: azure.cli.command_modules.billing.custom#billing_permission_list
+              resource-type: MGMT_BILLING
+              validator: azure.cli.command_modules.billing.manual._validators#billing_permission_list_validator
+          full-name: billing permission
+          help: List billing permissions
+          preview: true
+        policy:
+          commands:
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account
+                  options:
+                  - --account-name
+                  required: true
+                customer_name:
+                  help: The ID that uniquely identifies a customer
+                  options:
+                  - --customer-name
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_policy
+              full-name: billing policy show
+              help: Show the policies for a customer or for a billing profile. This
+                operation is supported only for billing accounts with agreement type
+                Microsoft Partner Agreement."
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_policy_show
+              validator: azure.cli.command_modules.billing.manual._validators#billing_profile_show_validator
+            update:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                customer_name:
+                  help: The ID that uniquely identifies a customer
+                  options:
+                  - --customer-name
+                marketplace_purchases:
+                  choices:
+                  - AllAllowed
+                  - OnlyFreeAllowed
+                  - NotAllowed
+                  help: The policy that controls whether Azure marketplace purchases
+                    are allowed for a billing profile.
+                  options:
+                  - --marketplace-purchases
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+                reservation_purchases:
+                  choices:
+                  - Allowed
+                  - NotAllowed
+                  help: The policy that controls whether Azure reservation purchases
+                    are allowed for a billing profile.
+                  options:
+                  - --reservation-purchases
+                view_charges:
+                  choices:
+                  - Allowed
+                  - NotAllowed
+                  help: The policy that controls whether users with Azure RBAC access
+                    to a subscription can view its charges.
+                  options:
+                  - --view-charges
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_policy
+              full-name: billing policy update
+              help: Update the policies for a billing profile. This operation is supported
+                only for billing accounts with agreement type Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_policy_update
+              resource-type: MGMT_BILLING
+              validator: azure.cli.command_modules.billing.manual._validators#billing_policy_update_validator
+          full-name: billing policy
+          help: billing policy
+          preview: true
+        product:
+          commands:
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                customer_name:
+                  help: The ID that uniquely identifies a customer.
+                  options:
+                  - --customer-name
+                filter_:
+                  help: May be used to filter by product type. The filter supports
+                    'eq', 'lt', 'gt', 'le', 'ge', and 'and'. It does not currently
+                    support 'ne', 'or', or 'not'. Tag filter is a key value pair string
+                    where key and value are separated by a colon (:).
+                  options:
+                  - --filter
+                invoice_section_name:
+                  help: The ID that uniquely identifies an invoice section.
+                  options:
+                  - --invoice-section-name
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_product
+              full-name: billing product list
+              help: List the products for a billing account. These don't include products
+                billed based on usage. The operation is supported for billing accounts
+                with agreement type Microsoft Customer Agreement or Microsoft Partner
+                Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_product_list
+              resource-type: MGMT_BILLING
+            move:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                destination_invoice_section_id:
+                  help: The destination invoice section id.
+                  options:
+                  - --destination-invoice-section-id
+                product_name:
+                  help: The ID that uniquely identifies a product.
+                  options:
+                  - --name
+                  - --product-name
+                  - -n
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_product
+              full-name: billing product move
+              help: Moves a product's charges to a new invoice section. The new invoice
+                section must belong to the same billing profile as the existing invoice
+                section. This operation is supported only for products that are purchased
+                with a recurring charge and for billing accounts with agreement type
+                Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_product_move
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                product_name:
+                  help: The ID that uniquely identifies a product.
+                  options:
+                  - --name
+                  - --product-name
+                  - -n
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_product
+              full-name: billing product show
+              help: Get a product by ID. The operation is supported only for billing
+                accounts with agreement type Microsoft Customer Agreement.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_product_show
+            update:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                auto_renew:
+                  choices:
+                  - 'Off'
+                  - 'On'
+                  help: Indicates whether auto renewal is turned on or off for a product.
+                  options:
+                  - --auto-renew
+                billing_frequency:
+                  choices:
+                  - OneTime
+                  - Monthly
+                  - UsageBased
+                  help: The frequency at which the product will be billed.
+                  options:
+                  - --billing-frequency
+                product_name:
+                  help: The ID that uniquely identifies a product.
+                  options:
+                  - --name
+                  - --product-name
+                  - -n
+                  required: true
+                status:
+                  choices:
+                  - Active
+                  - Inactive
+                  - PastDue
+                  - Expiring
+                  - Expired
+                  - Disabled
+                  - Cancelled
+                  - AutoRenew
+                  help: The current status of the product.
+                  options:
+                  - --status
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_product
+              full-name: billing product update
+              help: Update the properties of a Product. Currently, auto renew can
+                be updated. The operation is supported only for billing accounts with
+                agreement type Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_product_update
+              resource-type: MGMT_BILLING
+            validate-move:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                destination_invoice_section_id:
+                  help: The destination invoice section id.
+                  options:
+                  - --destination-invoice-section-id
+                product_name:
+                  help: The ID that uniquely identifies a product.
+                  options:
+                  - --name
+                  - --product-name
+                  - -n
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_product
+              full-name: billing product validate-move
+              help: Validate if a product's charges can be moved to a new invoice
+                section. This operation is supported only for products that are purchased
+                with a recurring charge and for billing accounts with agreement type
+                Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_product_validate_move
+              resource-type: MGMT_BILLING
+          full-name: billing product
+          help: billing product
+          preview: true
+        profile:
+          commands:
+            create:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                bill_to:
+                  help:
+                    long-summary: 'Usage: --bill-to first-name=XX last-name=XX company-name=XX
+                      address-line1=XX address-line2=XX address-line3=XX city=XX district=XX
+                      region=XX country=XX postal-code=XX email=XX phone-number=XX
+
+                      '
+                    short-summary: Billing address.
+                  nargs: '*'
+                  options:
+                  - --bill-to
+                display_name:
+                  help: The name of the billing profile.
+                  options:
+                  - --display-name
+                enabled_azure_plans:
+                  help:
+                    long-summary: 'Usage: --enabled-azure-plans sku-id=XX
+
+                      sku-id: The sku id.
+
+                      Multiple actions can be specified by using more than one --enabled-azure-plans
+                      argument.
+
+                      '
+                    short-summary: Information about the enabled azure plans.
+                  nargs: '*'
+                  options:
+                  - --enabled-azure-plans
+                invoice_email_opt_in:
+                  choices:
+                  - 'true'
+                  - 'false'
+                  help: Flag controlling whether the invoices for the billing profile
+                    are sent through email.
+                  nargs: '?'
+                  options:
+                  - --invoice-email-opt-in
+                invoice_sections_value:
+                  help: 'The invoice sections associated to the billing profile. Expected
+                    value: json-string/@json-file.'
+                  options:
+                  - --invoice-sections-value
+                po_number:
+                  help: The purchase order name that will appear on the invoices generated
+                    for the billing profile.
+                  options:
+                  - --po-number
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_profile
+              full-name: billing profile create
+              help: Creates or updates a billing profile. The operation is supported
+                for billing accounts with agreement type Microsoft Customer Agreement
+                or Microsoft Partner Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_profile_create
+              resource-type: MGMT_BILLING
+              support-no-wait: true
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                expand:
+                  help: May be used to expand the invoice sections.
+                  options:
+                  - --expand
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_profile
+              full-name: billing profile list
+              help: List the billing profiles that a user has access to. The operation
+                is supported for billing accounts with agreement type Microsoft Customer
+                Agreement or Microsoft Partner Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_profile_list
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                expand:
+                  help: May be used to expand the invoice sections.
+                  options:
+                  - --expand
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_profile
+              full-name: billing profile show
+              help: Get a billing profile by its ID. The operation is supported for
+                billing accounts with agreement type Microsoft Customer Agreement
+                or Microsoft Partner Agreement.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_profile_show
+            update:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                bill_to:
+                  help:
+                    long-summary: 'Usage: --bill-to first-name=XX last-name=XX company-name=XX
+                      address-line1=XX address-line2=XX address-line3=XX city=XX district=XX
+                      region=XX country=XX postal-code=XX email=XX phone-number=XX
+
+                      '
+                    short-summary: Billing address.
+                  nargs: '*'
+                  options:
+                  - --bill-to
+                display_name:
+                  help: The name of the billing profile.
+                  options:
+                  - --display-name
+                enabled_azure_plans:
+                  help:
+                    long-summary: 'Usage: --enabled-azure-plans sku-id=XX
+
+                      sku-id: The sku id.
+
+                      Multiple actions can be specified by using more than one --enabled-azure-plans
+                      argument.
+
+                      '
+                    short-summary: Information about the enabled azure plans.
+                  nargs: '*'
+                  options:
+                  - --enabled-azure-plans
+                invoice_email_opt_in:
+                  choices:
+                  - 'true'
+                  - 'false'
+                  help: Flag controlling whether the invoices for the billing profile
+                    are sent through email.
+                  nargs: '?'
+                  options:
+                  - --invoice-email-opt-in
+                invoice_sections_value:
+                  help: 'The invoice sections associated to the billing profile. Expected
+                    value: json-string/@json-file.'
+                  options:
+                  - --invoice-sections-value
+                po_number:
+                  help: The purchase order name that will appear on the invoices generated
+                    for the billing profile.
+                  options:
+                  - --po-number
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_profile
+              full-name: billing profile update
+              help: Creates or updates a billing profile. The operation is supported
+                for billing accounts with agreement type Microsoft Customer Agreement
+                or Microsoft Partner Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_profile_update
+              resource-type: MGMT_BILLING
+              support-no-wait: true
+            wait:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                created:
+                  arg-group: Wait Condition
+                  help: wait until created with 'provisioningState' at 'Succeeded'
+                  options:
+                  - --created
+                custom:
+                  arg-group: Wait Condition
+                  help: Wait until the condition satisfies a custom JMESPath query.
+                    E.g. provisioningState!='InProgress', instanceView.statuses[?code=='PowerState/running']
+                  options:
+                  - --custom
+                deleted:
+                  arg-group: Wait Condition
+                  help: wait until deleted
+                  options:
+                  - --deleted
+                exists:
+                  arg-group: Wait Condition
+                  help: wait until the resource exists
+                  options:
+                  - --exists
+                expand:
+                  help: May be used to expand the invoice sections.
+                  options:
+                  - --expand
+                interval:
+                  arg-group: Wait Condition
+                  default: 30
+                  help: polling interval in seconds
+                  options:
+                  - --interval
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+                timeout:
+                  arg-group: Wait Condition
+                  default: 3600
+                  help: maximum wait in seconds
+                  options:
+                  - --timeout
+                updated:
+                  arg-group: Wait Condition
+                  help: wait until updated with provisioningState at 'Succeeded'
+                  options:
+                  - --updated
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_profile
+              full-name: billing profile wait
+              help: Place the CLI in a waiting state until a condition of the billing
+                profile is met.
+              resource-type: MGMT_BILLING
+              wait-operation: azure.cli.command_modules.billing.custom#billing_profile_show
+          full-name: billing profile
+          help: Manage billing profile of billing account
+          preview: true
+        property:
+          commands:
+            show:
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_property
+              full-name: billing property show
+              help: Get the billing properties for a subscription. This operation
+                is not supported for billing accounts with agreement type Enterprise
+                Agreement.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_property_show
+            update:
+              arguments:
+                cost_center:
+                  help: The cost center applied to the subscription.
+                  options:
+                  - --cost-center
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_property
+              full-name: billing property update
+              help: Update the billing property of a subscription. Currently, cost
+                center can be updated. The operation is supported only for billing
+                accounts with agreement type Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_property_update
+              resource-type: MGMT_BILLING
+          full-name: billing property
+          help: billing property
+          preview: true
+        role-assignment:
+          commands:
+            delete:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                invoice_section_name:
+                  help: The ID that uniquely identifies an invoice section.
+                  options:
+                  - --invoice-section-name
+                name:
+                  help: The ID that uniquely identifies a role assignment.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_role_assignment
+              confirmation: true
+              full-name: billing role-assignment delete
+              help: Delete a role assignment for the caller on a billing account.
+                The operation is supported for billing accounts with agreement type
+                Microsoft Partner Agreement or Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_role_assignment_delete
+              resource-type: MGMT_BILLING
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                invoice_section_name:
+                  help: The ID that uniquely identifies an invoice section.
+                  options:
+                  - --invoice-section-name
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_role_assignment
+              full-name: billing role-assignment list
+              help: List the role assignments for the caller on a billing account.
+                The operation is supported for billing accounts with agreement type
+                Microsoft Partner Agreement or Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_role_assignment_list
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                invoice_section_name:
+                  help: The ID that uniquely identifies an invoice section.
+                  options:
+                  - --invoice-section-name
+                name:
+                  help: The ID that uniquely identifies a role assignment.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_role_assignment
+              full-name: billing role-assignment show
+              help: Show the role assignment detail for the caller within different
+                scopes. The operation is supported for billing accounts with agreement
+                type Microsoft Partner Agreement or Microsoft Customer Agreement.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_role_assignment_show
+          full-name: billing role-assignment
+          help: billing role-assignment
+          preview: true
+        role-definition:
+          commands:
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                invoice_section_name:
+                  help: The ID that uniquely identifies an invoice section.
+                  options:
+                  - --invoice-section-name
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_role_definition
+              full-name: billing role-definition list
+              help: List the role definitions for a billing account. The operation
+                is supported for billing accounts with agreement type Microsoft Partner
+                Agreement or Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_role_definition_list
+              resource-type: MGMT_BILLING
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                invoice_section_name:
+                  help: The ID that uniquely identifies an invoice section.
+                  options:
+                  - --invoice-section-name
+                name:
+                  help: The name that uniquely identifies a role definition.
+                  options:
+                  - --name
+                  - -n
+                  required: true
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_role_definition
+              full-name: billing role-definition show
+              help: Show the role definition details
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_role_definition_show
+          full-name: billing role-definition
+          help: Display billing role-definition
+          preview: true
+        subscription:
+          commands:
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                customer_name:
+                  help: The ID that uniquely identifies a customer.
+                  options:
+                  - --customer-name
+                invoice_section_name:
+                  help: The ID that uniquely identifies an invoice section.
+                  options:
+                  - --invoice-section-name
+                profile_name:
+                  help: The ID that uniquely identifies a billing profile.
+                  options:
+                  - --profile-name
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_subscription
+              full-name: billing subscription list
+              help: List the subscriptions for a billing account. The operation is
+                supported for billing accounts with agreement type Microsoft Customer
+                Agreement or Microsoft Partner Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_subscription_list
+              resource-type: MGMT_BILLING
+            move:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                destination_invoice_section_id:
+                  help: The destination invoice section id.
+                  options:
+                  - --destination-invoice-section-id
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_subscription
+              full-name: billing subscription move
+              help: Moves a subscription's charges to a new invoice section. The new
+                invoice section must belong to the same billing profile as the existing
+                invoice section. This operation is supported for billing accounts
+                with agreement type Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_subscription_move
+              resource-type: MGMT_BILLING
+              support-no-wait: true
+            show:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_subscription
+              full-name: billing subscription show
+              help: Get a subscription by its ID. The operation is supported for billing
+                accounts with agreement type Microsoft Customer Agreement and Microsoft
+                Partner Agreement.
+              resource-type: MGMT_BILLING
+              show-operation: azure.cli.command_modules.billing.custom#billing_subscription_show
+            update:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                cost_center:
+                  help: The cost center applied to the subscription.
+                  options:
+                  - --cost-center
+                sku_id:
+                  help: The sku ID of the Azure plan for the subscription.
+                  options:
+                  - --sku-id
+                subscription_billing_status:
+                  choices:
+                  - Active
+                  - Inactive
+                  - Abandoned
+                  - Deleted
+                  - Warning
+                  help: The current billing status of the subscription.
+                  options:
+                  - --subscription-billing-status
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_subscription
+              full-name: billing subscription update
+              help: Update the properties of a billing subscription. Currently, cost
+                center can be updated. The operation is supported only for billing
+                accounts with agreement type Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_subscription_update
+              resource-type: MGMT_BILLING
+            validate-move:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                destination_invoice_section_id:
+                  help: The destination invoice section id.
+                  options:
+                  - --destination-invoice-section-id
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_subscription
+              full-name: billing subscription validate-move
+              help: Validate if a subscription's charges can be moved to a new invoice
+                section. This operation is supported for billing accounts with agreement
+                type Microsoft Customer Agreement.
+              operation: azure.cli.command_modules.billing.custom#billing_subscription_validate_move
+              resource-type: MGMT_BILLING
+            wait:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                created:
+                  arg-group: Wait Condition
+                  help: wait until created with 'provisioningState' at 'Succeeded'
+                  options:
+                  - --created
+                custom:
+                  arg-group: Wait Condition
+                  help: Wait until the condition satisfies a custom JMESPath query.
+                    E.g. provisioningState!='InProgress', instanceView.statuses[?code=='PowerState/running']
+                  options:
+                  - --custom
+                deleted:
+                  arg-group: Wait Condition
+                  help: wait until deleted
+                  options:
+                  - --deleted
+                exists:
+                  arg-group: Wait Condition
+                  help: wait until the resource exists
+                  options:
+                  - --exists
+                interval:
+                  arg-group: Wait Condition
+                  default: 30
+                  help: polling interval in seconds
+                  options:
+                  - --interval
+                timeout:
+                  arg-group: Wait Condition
+                  default: 3600
+                  help: maximum wait in seconds
+                  options:
+                  - --timeout
+                updated:
+                  arg-group: Wait Condition
+                  help: wait until updated with provisioningState at 'Succeeded'
+                  options:
+                  - --updated
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_subscription
+              full-name: billing subscription wait
+              help: Place the CLI in a waiting state until a condition of the billing
+                subscription is met.
+              resource-type: MGMT_BILLING
+              wait-operation: azure.cli.command_modules.billing.custom#billing_subscription_show
+          full-name: billing subscription
+          help: billing subscription
+          preview: true
+        transaction:
+          commands:
+            list:
+              arguments:
+                account_name:
+                  help: The ID that uniquely identifies a billing account.
+                  options:
+                  - --account-name
+                  required: true
+                invoice_name:
+                  help: The ID that uniquely identifies an invoice.
+                  options:
+                  - --invoice-name
+                  required: true
+              client-factory: azure.cli.command_modules.billing.generated._client_factory#cf_transaction
+              full-name: billing transaction list
+              help: List the transactions for an invoice. Transactions include purchases,
+                refunds and Azure usage charges.
+              operation: azure.cli.command_modules.billing.custom#billing_transaction_list
+              resource-type: MGMT_BILLING
+          full-name: billing transaction
+          help: billing transaction
+          preview: true
+      full-name: billing
+  full-name: ''
