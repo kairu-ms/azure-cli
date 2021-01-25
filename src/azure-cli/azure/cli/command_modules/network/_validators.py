@@ -47,12 +47,11 @@ def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path,
 
 
 @validator_factory_wrapper
-def get_asg_validator(loader, dest):
+def get_asg_validator(dest):
     from msrestazure.tools import is_valid_resource_id, resource_id
 
-    ApplicationSecurityGroup = loader.get_models('ApplicationSecurityGroup')
-
     def _validate_asg_name_or_id(cmd, namespace):
+        ApplicationSecurityGroup = cmd.get_models('ApplicationSecurityGroup')
         subscription_id = get_subscription_id(cmd.cli_ctx)
         resource_group = namespace.resource_group_name
         names_or_ids = getattr(namespace, dest)
@@ -1049,7 +1048,7 @@ def process_nic_create_namespace(cmd, namespace):
     validate_ag_address_pools(cmd, namespace)
     validate_address_pool_id_list(cmd, namespace)
     validate_inbound_nat_rule_id_list(cmd, namespace)
-    get_asg_validator(cmd.loader, 'application_security_groups')(cmd, namespace)
+    get_asg_validator('application_security_groups')(cmd, namespace)
 
     # process folded parameters
     get_subnet_validator(has_type_field=False)(cmd, namespace)
