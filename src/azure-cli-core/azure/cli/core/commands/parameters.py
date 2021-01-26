@@ -34,22 +34,9 @@ def get_location_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: d
     return [item.name for item in result]
 
 
-# pylint: disable=redefined-builtin
-def get_datetime_type(help=None, date=True, time=True, timezone=True):
-
-    help_string = help + ' ' if help else ''
-    accepted_formats = []
-    if date:
-        accepted_formats.append('date (yyyy-mm-dd)')
-    if time:
-        accepted_formats.append('time (hh:mm:ss.xxxxx)')
-    if timezone:
-        accepted_formats.append('timezone (+/-hh:mm)')
-    help_string = help_string + 'Format: ' + ' '.join(accepted_formats)
-
+def get_datetime_action(date=True, time=True, timezone=True):
     # pylint: disable=too-few-public-methods
     class DatetimeAction(argparse.Action):
-
         def __call__(self, parser, namespace, values, option_string=None):
             """ Parse a date value and return the ISO8601 string. """
             import dateutil.parser
@@ -62,6 +49,15 @@ def get_datetime_type(help=None, date=True, time=True, timezone=True):
                 dt_val = dateutil.parser.parse(value_string)
             except ValueError:
                 pass
+
+            accepted_formats = []
+            if date:
+                accepted_formats.append('date (yyyy-mm-dd)')
+            if time:
+                accepted_formats.append('time (hh:mm:ss.xxxxx)')
+            if timezone:
+                accepted_formats.append('timezone (+/-hh:mm)')
+            help_string = ' '.join(accepted_formats)
 
             # TODO: custom parsing attempts here
             if not dt_val:
@@ -82,8 +78,22 @@ def get_datetime_type(help=None, date=True, time=True, timezone=True):
 
             iso_string = dt_val.isoformat()
             setattr(namespace, self.dest, iso_string)
+    return DatetimeAction
 
-    return CLIArgumentType(action=DatetimeAction, nargs='+', help=help_string)
+
+# pylint: disable=redefined-builtin
+def get_datetime_type(help=None, date=True, time=True, timezone=True):
+    help_string = help + ' ' if help else ''
+    accepted_formats = []
+    if date:
+        accepted_formats.append('date (yyyy-mm-dd)')
+    if time:
+        accepted_formats.append('time (hh:mm:ss.xxxxx)')
+    if timezone:
+        accepted_formats.append('timezone (+/-hh:mm)')
+    help_string = help_string + 'Format: ' + ' '.join(accepted_formats)
+    action = get_datetime_action(date=date, time=time, timezone=timezone)
+    return CLIArgumentType(action=action, nargs='+', help=help_string)
 
 
 def file_type(path):
@@ -158,6 +168,22 @@ def get_generic_completion_list(generic_list):
     return completer
 
 
+def get_three_state_action(positive_label='true', negative_label='false', invert=False, return_label=False):
+    # pylint: disable=too-few-public-methods
+    class ThreeStateAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            values = values or positive_label
+            is_positive = values.lower() == positive_label.lower()
+            is_positive = not is_positive if invert else is_positive
+            set_val = None
+            if return_label:
+                set_val = positive_label if is_positive else negative_label
+            else:
+                set_val = is_positive
+            setattr(namespace, self.dest, set_val)
+    return ThreeStateAction
+
+
 def get_three_state_flag(positive_label='true', negative_label='false', invert=False, return_label=False):
     """ Creates a flag-like argument that can also accept positive/negative values. This allows
     consistency between create commands that typically use flags and update commands that require
@@ -169,27 +195,30 @@ def get_three_state_flag(positive_label='true', negative_label='false', invert=F
     - return_label: if true, return the corresponding label. Otherwise, return a boolean value
     """
     choices = [positive_label, negative_label]
-
-    # pylint: disable=too-few-public-methods
-    class ThreeStateAction(argparse.Action):
-
-        def __call__(self, parser, namespace, values, option_string=None):
-            values = values or positive_label
-            is_positive = values.lower() == positive_label.lower()
-            is_positive = not is_positive if invert else is_positive
-            set_val = None
-            if return_label:
-                set_val = positive_label if is_positive else negative_label
-            else:
-                set_val = is_positive
-            setattr(namespace, self.dest, set_val)
-
+    action = get_three_state_action(positive_label=positive_label, negative_label=negative_label, invert=invert,
+                                    return_label=return_label)
     params = {
         'choices': CaseInsensitiveList(choices),
         'nargs': '?',
-        'action': ThreeStateAction
+        'action': action
     }
     return CLIArgumentType(**params)
+
+    # pylint: disable=too-few-public-methods
+
+
+class DefaultEnumAction(argparse.Action):
+
+    def __call__(self, parser, args, values, option_string=None):
+
+        def _get_value(val):
+            return next((x for x in self.choices if x.lower() == val.lower()), val)
+
+        if isinstance(values, list):
+            values = [_get_value(v) for v in values]
+        else:
+            values = _get_value(values)
+        setattr(args, self.dest, values)
 
 
 def get_enum_type(data, default=None):
@@ -203,32 +232,15 @@ def get_enum_type(data, default=None):
     except AttributeError:
         choices = data
 
-    # pylint: disable=too-few-public-methods
-    class DefaultAction(argparse.Action):
-
-        def __call__(self, parser, args, values, option_string=None):
-
-            def _get_value(val):
-                return next((x for x in self.choices if x.lower() == val.lower()), val)
-
-            if isinstance(values, list):
-                values = [_get_value(v) for v in values]
-            else:
-                values = _get_value(values)
-            setattr(args, self.dest, values)
-
-    def _type(value):
-        return next((x for x in choices if x.lower() == value.lower()), value) if value else value
-
     default_value = None
     if default:
         default_value = next((x for x in choices if x.lower() == default.lower()), None)
         if not default_value:
             raise CLIError("Command authoring exception: unrecognized default '{}' from choices '{}'"
                            .format(default, choices))
-        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=DefaultAction, default=default_value)
+        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=DefaultEnumAction, default=default_value)
     else:
-        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=DefaultAction)
+        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=DefaultEnumAction)
     return arg_type
 
 
