@@ -20,18 +20,18 @@ class AzFuncValidator(AzValidator):
     def __init__(self, func):
         if not isinstance(func, types.FunctionType):
             raise TypeError('Expect a function. Got {}'.format(type(func)))
-        self.module_name = inspect.getmodule(func).__name__
-        self.name = func.__name__
+        self.import_module = inspect.getmodule(func).__name__
+        self.import_name = func.__name__
         self.func = func
 
     def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)
 
     def __str__(self):
-        return "{}#{}".format(self.module_name, self.name)
+        return "{}#{}".format(self.import_module, self.import_name)
 
 
-class AzClassValidator(AzValidator):
+class AzFuncValidatorByFactory(AzValidator):
 
     def __init__(self, factory, args, kwargs):
         if isinstance(factory, types.FunctionType):     # support a factory function which return value is callable
@@ -41,8 +41,8 @@ class AzClassValidator(AzValidator):
         else:
             raise TypeError("Expect a function or a class. Got {}".format(type(factory)))
 
-        self.module_name = inspect.getmodule(factory).__name__
-        self.name = factory.__name__
+        self.import_module = inspect.getmodule(factory).__name__
+        self.import_name = factory.__name__
         self.kwargs = {}
         if len(args) > 0:
             keys = list(sig.parameters.keys())
@@ -60,7 +60,7 @@ class AzClassValidator(AzValidator):
         self.instance(*args, **kwargs)
 
     def __str__(self):
-        return "{}#{}".format(self.module_name, self.name)
+        return "{}#{}".format(self.import_module, self.import_name)
 
 
 def func_validator_wrapper(func):
@@ -69,5 +69,5 @@ def func_validator_wrapper(func):
 
 def validator_factory_wrapper(factory):
     def wrapper(*args, **kwargs):
-        return AzClassValidator(factory, args, kwargs)
+        return AzFuncValidatorByFactory(factory, args, kwargs)
     return wrapper

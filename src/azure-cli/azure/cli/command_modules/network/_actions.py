@@ -7,9 +7,11 @@ from collections import defaultdict
 
 import argparse
 from knack.util import CLIError
+from azure.cli.core.translator import cls_action_wrapper
 
 
 # pylint: disable=protected-access
+@cls_action_wrapper
 class AddBackendAddressCreate(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -36,6 +38,7 @@ class AddBackendAddressCreate(argparse._AppendAction):
         return d
 
 
+@cls_action_wrapper
 class AddBackendAddressCreateForCrossRegionLB(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -60,3 +63,76 @@ class AddBackendAddressCreateForCrossRegionLB(argparse._AppendAction):
             else:
                 raise CLIError('key error: key must be one of name and frontend-ip-address.')
         return d
+
+
+# pylint: disable=too-few-public-methods
+@cls_action_wrapper
+class WafConfigExclusionAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        cmd = namespace._cmd  # pylint: disable=protected-access
+        ApplicationGatewayFirewallExclusion = cmd.get_models('ApplicationGatewayFirewallExclusion')
+        if not namespace.exclusions:
+            namespace.exclusions = []
+        if isinstance(values, list):
+            values = ' '.join(values)
+        try:
+            variable, op, selector = values.split(' ')
+        except (ValueError, TypeError):
+            raise CLIError('usage error: --exclusion VARIABLE OPERATOR VALUE')
+        namespace.exclusions.append(ApplicationGatewayFirewallExclusion(
+            match_variable=variable,
+            selector_match_operator=op,
+            selector=selector
+        ))
+
+
+# pylint: disable=protected-access,too-few-public-methods
+@cls_action_wrapper
+class NWConnectionMonitorEndpointFilterItemAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        ConnectionMonitorEndpointFilterItem = namespace._cmd.get_models('ConnectionMonitorEndpointFilterItem')
+
+        if not namespace.filter_items:
+            namespace.filter_items = []
+
+        filter_item = ConnectionMonitorEndpointFilterItem()
+
+        for item in values:
+            try:
+                key, val = item.split('=', 1)
+
+                if hasattr(filter_item, key):
+                    setattr(filter_item, key, val)
+                else:
+                    raise CLIError(
+                        "usage error: '{}' is not a valid property of ConnectionMonitorEndpointFilterItem".format(key))
+            except ValueError:
+                raise CLIError(
+                    'usage error: {} PropertyName=PropertyValue [PropertyName=PropertyValue ...]'.format(option_string))
+
+        namespace.filter_items.append(filter_item)
+
+
+# pylint: disable=protected-access,too-few-public-methods
+@cls_action_wrapper
+class NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        HTTPHeader = namespace._cmd.get_models('HTTPHeader')
+
+        if not namespace.http_request_headers:
+            namespace.http_request_headers = []
+
+        request_header = HTTPHeader()
+
+        for item in values:
+            try:
+                key, val = item.split('=', 1)
+                if hasattr(request_header, key):
+                    setattr(request_header, key, val)
+                else:
+                    raise CLIError("usage error: '{}' is not a value property of HTTPHeader".format(key))
+            except ValueError:
+                raise CLIError(
+                    'usage error: {} name=HTTPHeader value=HTTPHeaderValue'.format(option_string))
+
+        namespace.http_request_headers.append(request_header)
