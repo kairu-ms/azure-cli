@@ -4,15 +4,28 @@
 # --------------------------------------------------------------------------------------------
 import inspect
 import types
+from azure.cli.core.util import get_arg_list
 
 
 class AzValidator:
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, cmd, namespace):
         raise NotImplementedError()
 
     def __str__(self):
         raise NotImplementedError()
+
+    @staticmethod
+    def _build_kwargs(func, cmd, namespace):  # pylint: disable=no-self-use
+        arg_list = get_arg_list(func)
+        kwargs = {}
+        if 'cmd' in arg_list:
+            kwargs['cmd'] = cmd  # pylint: disable=protected-access
+        if 'namespace' in arg_list:
+            kwargs['namespace'] = namespace
+        if 'ns' in arg_list:
+            kwargs['ns'] = namespace
+        return kwargs
 
 
 class AzFuncValidator(AzValidator):
@@ -24,8 +37,9 @@ class AzFuncValidator(AzValidator):
         self.import_name = func.__name__
         self.func = func
 
-    def __call__(self, *args, **kwargs):
-        return self.func(*args, **kwargs)
+    def __call__(self, cmd, namespace):
+        kwargs = self._build_kwargs(self.func, cmd, namespace)
+        return self.func(**kwargs)
 
     def __str__(self):
         return "{}#{}".format(self.import_module, self.import_name)
@@ -56,8 +70,9 @@ class AzFuncValidatorByFactory(AzValidator):
         if not callable(self.instance):
             raise TypeError('Expect a callable instance.')
 
-    def __call__(self, *args, **kwargs):
-        self.instance(*args, **kwargs)
+    def __call__(self, cmd, namespace):
+        kwargs = self._build_kwargs(self.instance, cmd, namespace)
+        return self.instance(**kwargs)
 
     def __str__(self):
         return "{}#{}".format(self.import_module, self.import_name)
