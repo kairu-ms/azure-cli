@@ -10,7 +10,6 @@ import platform
 from azure.cli.core import EXCLUDED_PARAMS
 from azure.cli.core.commands.constants import CLI_PARAM_KWARGS, CLI_POSITIONAL_PARAM_KWARGS
 from azure.cli.core.commands.validators import validate_tag, validate_tags, generate_deployment_name
-from azure.cli.core.decorators import Completer
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction, ALL
 from azure.cli.core.translator import cls_action_wrapper, cls_action_factory_wrapper
@@ -18,6 +17,7 @@ from knack.arguments import (
     CLIArgumentType, CaseInsensitiveList, ignore_type, ArgumentsContext)
 from knack.log import get_logger
 from knack.util import CLIError
+from azure.cli.core.translator import func_completer_wrapper, completer_factory_wrapper
 
 logger = get_logger(__name__)
 
@@ -28,7 +28,7 @@ def get_subscription_locations(cli_ctx):
     return list(subscription_client.subscriptions.list_locations(subscription_id))
 
 
-@Completer
+@func_completer_wrapper
 def get_location_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
     result = get_subscription_locations(cmd.cli_ctx)
     return [item.name for item in result]
@@ -125,7 +125,7 @@ def get_resource_groups(cli_ctx):
     return list(rcf.resource_groups.list())
 
 
-@Completer
+@func_completer_wrapper
 def get_resource_group_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
     result = get_resource_groups(cmd.cli_ctx)
     return [item.name for item in result]
@@ -149,9 +149,9 @@ def get_resources_in_subscription(cli_ctx, resource_type=None):
     return list(rcf.resources.list(filter=filter_str))
 
 
+@completer_factory_wrapper
 def get_resource_name_completion_list(resource_type=None):
 
-    @Completer
     def completer(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
         rg = getattr(namespace, 'resource_group_name', None)
         if rg:
@@ -161,9 +161,9 @@ def get_resource_name_completion_list(resource_type=None):
     return completer
 
 
+@completer_factory_wrapper
 def get_generic_completion_list(generic_list):
 
-    @Completer
     def completer(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
         return generic_list
     return completer
