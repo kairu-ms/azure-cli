@@ -5,11 +5,13 @@
 import inspect
 import types
 from azure.cli.core.util import get_arg_list
+from argcomplete.completers import FilesCompleter
+from argcomplete.completers import DirectoriesCompleter
 
 
 class AzCompleter:
 
-    def __call__(self, cmd, namespace):
+    def __call__(self, **kwargs):
         raise NotImplementedError()
 
     def __str__(self):
@@ -82,6 +84,32 @@ class AzFuncCompleterByFactory(AzCompleter):
         return "{}#{}".format(self.import_module, self.import_name)
 
 
+class AzExternalCompleterByFactory(AzCompleter):
+
+    def __init__(self, factory, args, kwargs):
+        if isinstance(factory, types.FunctionType):  # support a factory function which return value is callable
+            sig = inspect.signature(factory)
+        elif isinstance(factory, type):
+            sig = inspect.signature(factory.__init__)
+        else:
+            raise TypeError("Expect a function or a class. Got {}".format(type(factory)))
+
+        self.import_module = inspect.getmodule(_external_completer_cls_wrapper).__name__
+        self.import_name = factory.__name__
+        self.kwargs = {}
+        if len(args) > 0:
+            keys = list(sig.parameters.keys())
+            if keys[0] == 'self':
+                keys = keys[1:]
+            keys = keys[:len(args)]
+            for key, value in zip(keys, args):
+                self.kwargs[key] = value
+        self.kwargs.update(kwargs)
+        self.instance = factory(*args, **kwargs)
+        if not callable(self.instance):
+            raise TypeError('Expect a callable instance.')
+
+
 def func_completer_wrapper(func):
     return AzFuncCompleter(func)
 
@@ -90,3 +118,14 @@ def completer_factory_wrapper(factory):
     def wrapper(*args, **kwargs):
         return AzFuncCompleterByFactory(factory, args, kwargs)
     return wrapper
+
+
+def _external_completer_cls_wrapper(cls):
+    def wrapper(*args, **kwargs):
+        return AzExternalCompleterByFactory(cls, args, kwargs)
+    return wrapper
+
+
+FilesCompleter = _external_completer_cls_wrapper(FilesCompleter)
+DirectoriesCompleter = _external_completer_cls_wrapper(DirectoriesCompleter)
+
