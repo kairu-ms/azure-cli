@@ -20,15 +20,15 @@ class AzFuncExceptionHandler(AzExceptionHandler):
     def __init__(self, func):
         if not isinstance(func, types.FunctionType):
             raise TypeError('Expect a function. Got {}'.format(type(func)))
-        self.module_name = inspect.getmodule(func).__name__
-        self.name = func.__name__
+        self.import_module = inspect.getmodule(func).__name__
+        self.import_name = func.__name__
         self.func = func
 
     def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)
 
     def __str__(self):
-        return "{}#{}".format(self.module_name, self.name)
+        return "{}#{}".format(self.import_module, self.import_name)
 
 
 def func_exception_handler_wrapper(func):

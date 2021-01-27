@@ -30,12 +30,11 @@ from azure.cli.command_modules.network._validators import (
     validate_service_endpoint_policy, validate_delegations, validate_subresource_list,
     validate_er_peer_circuit, validate_ag_address_pools, validate_custom_error_pages,
     validate_custom_headers, validate_status_code_ranges, validate_subnet_ranges,
-    WafConfigExclusionAction, validate_express_route_peering, validate_virtual_hub,
+    validate_express_route_peering, validate_virtual_hub,
     validate_express_route_port, bandwidth_validator_factory,
     get_header_configuration_validator, validate_nat_gateway, validate_match_variables,
     validate_waf_policy, get_subscription_list_validator, validate_frontend_ip_configs,
     validate_user_assigned_identity, validate_virtul_network_gateway, validate_private_dns_zone,
-    NWConnectionMonitorEndpointFilterItemAction, NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction,
     process_private_link_resource_id_argument, process_private_endpoint_connection_id_argument,
     process_vnet_name_or_id, validate_trusted_client_cert)
 from azure.mgmt.trafficmanager.models import MonitorProtocol, ProfileStatus
@@ -44,7 +43,10 @@ from azure.cli.command_modules.network._completers import (
     ag_url_map_rule_completion_list, tm_endpoint_completion_list, service_endpoint_completer,
     get_sdk_completer)
 from azure.cli.command_modules.network._actions import (
-    AddBackendAddressCreate, AddBackendAddressCreateForCrossRegionLB, TrustedClientCertificateCreate,
+    AddBackendAddressCreate,
+    AddBackendAddressCreateForCrossRegionLB, WafConfigExclusionAction,
+    NWConnectionMonitorEndpointFilterItemAction,
+    NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction, TrustedClientCertificateCreate,
     SslProfilesCreate)
 from azure.cli.core.util import get_json_object
 from azure.cli.core.profiles import ResourceType

@@ -13,7 +13,7 @@ from azure.cli.core.commands.validators import validate_tag, validate_tags, gene
 from azure.cli.core.decorators import Completer
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction, ALL
-
+from azure.cli.core.translator import cls_action_wrapper, cls_action_factory_wrapper
 from knack.arguments import (
     CLIArgumentType, CaseInsensitiveList, ignore_type, ArgumentsContext)
 from knack.log import get_logger
@@ -34,6 +34,7 @@ def get_location_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: d
     return [item.name for item in result]
 
 
+@cls_action_factory_wrapper
 def get_datetime_action(date=True, time=True, timezone=True):
     # pylint: disable=too-few-public-methods
     class DatetimeAction(argparse.Action):
@@ -168,6 +169,7 @@ def get_generic_completion_list(generic_list):
     return completer
 
 
+@cls_action_factory_wrapper
 def get_three_state_action(positive_label='true', negative_label='false', invert=False, return_label=False):
     # pylint: disable=too-few-public-methods
     class ThreeStateAction(argparse.Action):
@@ -207,7 +209,8 @@ def get_three_state_flag(positive_label='true', negative_label='false', invert=F
     # pylint: disable=too-few-public-methods
 
 
-class DefaultEnumAction(argparse.Action):
+@cls_action_wrapper
+class EnumAction(argparse.Action):
 
     def __call__(self, parser, args, values, option_string=None):
 
@@ -238,9 +241,9 @@ def get_enum_type(data, default=None):
         if not default_value:
             raise CLIError("Command authoring exception: unrecognized default '{}' from choices '{}'"
                            .format(default, choices))
-        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=DefaultEnumAction, default=default_value)
+        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=EnumAction, default=default_value)
     else:
-        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=DefaultEnumAction)
+        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=EnumAction)
     return arg_type
 
 
