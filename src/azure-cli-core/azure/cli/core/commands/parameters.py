@@ -17,7 +17,7 @@ from knack.arguments import (
     CLIArgumentType, CaseInsensitiveList, ignore_type, ArgumentsContext)
 from knack.log import get_logger
 from knack.util import CLIError
-from azure.cli.core.translator import func_completer_wrapper, completer_factory_wrapper
+from azure.cli.core.translator import func_completer_wrapper, completer_factory_wrapper, func_type_converter_wrapper
 
 logger = get_logger(__name__)
 
@@ -97,9 +97,16 @@ def get_datetime_type(help=None, date=True, time=True, timezone=True):
     return CLIArgumentType(action=action, nargs='+', help=help_string)
 
 
+@func_type_converter_wrapper
 def file_type(path):
     import os
     return os.path.expanduser(path)
+
+
+@func_type_converter_wrapper
+def json_object_type(json_string):
+    from azure.cli.core.util import get_json_object
+    return get_json_object(json_string)
 
 
 def get_location_name_type(cli_ctx):
@@ -265,10 +272,11 @@ name_type = CLIArgumentType(options_list=['--name', '-n'], help='the primary res
 
 
 def get_location_type(cli_ctx):
+    from azure.cli.core.translator.type_converter import AzLocationNameTypeConverter
     location_type = CLIArgumentType(
         options_list=['--location', '-l'],
         completer=get_location_completion_list,
-        type=get_location_name_type(cli_ctx),
+        type=AzLocationNameTypeConverter(cli_ctx),
         help="Location. Values from: `az account list-locations`. "
              "You can configure the default location using `az configure --defaults location=<location>`.",
         metavar='LOCATION',

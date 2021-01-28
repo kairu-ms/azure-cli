@@ -46,7 +46,7 @@ from azure.cli.command_modules.network._actions import AddBackendAddressCreate,\
     AddBackendAddressCreateForCrossRegionLB, WafConfigExclusionAction,\
     NWConnectionMonitorEndpointFilterItemAction,\
     NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction
-from azure.cli.core.util import get_json_object
+from azure.cli.core.commands.parameters import json_object_type as get_json_object
 from azure.cli.core.profiles import ResourceType
 
 
