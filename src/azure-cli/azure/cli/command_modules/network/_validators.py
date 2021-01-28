@@ -20,7 +20,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt
 from azure.cli.core.commands.validators import validate_parameter_set
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.azclierror import RequiredArgumentMissingError
-from azure.cli.core.translator import func_validator_wrapper, validator_factory_wrapper
+from azure.cli.core.translator import func_validator_wrapper, validator_factory_wrapper, func_type_converter_wrapper
 
 logger = get_logger(__name__)
 
@@ -134,6 +134,7 @@ def validate_ddos_name_or_id(cmd, namespace):
 
 
 # pylint: disable=inconsistent-return-statements
+@func_type_converter_wrapper
 def dns_zone_name_type(value):
     if value:
         return value[:-1] if value[-1] == '.' else value

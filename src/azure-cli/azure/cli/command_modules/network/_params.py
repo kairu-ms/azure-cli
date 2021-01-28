@@ -49,6 +49,7 @@ from azure.cli.command_modules.network._actions import (
     NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction, TrustedClientCertificateCreate,
     SslProfilesCreate)
 from azure.cli.core.util import get_json_object
+from azure.cli.core.commands.parameters import json_object_type as get_json_object
 from azure.cli.core.profiles import ResourceType
 
 

@@ -109,6 +109,12 @@ class AzExternalCompleterByFactory(AzCompleter):
         if not callable(self.instance):
             raise TypeError('Expect a callable instance.')
 
+    def __call__(self, *args, **kwargs):
+        return self.instance(*args, **kwargs)
+
+    def __str__(self):
+        return "{}#{}".format(self.import_module, self.import_name)
+
 
 def func_completer_wrapper(func):
     return AzFuncCompleter(func)
