@@ -85,4 +85,3 @@ class AzLocationNameTypeConverter(AzTypeConverter):
 def func_type_converter_wrapper(func):
     return AzFuncTypeConverter(func)
 
-
