@@ -6,6 +6,8 @@
 
 import argparse
 import platform
+from enum import Enum
+
 
 from azure.cli.core import EXCLUDED_PARAMS
 from azure.cli.core.commands.constants import CLI_PARAM_KWARGS, CLI_POSITIONAL_PARAM_KWARGS
@@ -17,7 +19,8 @@ from knack.arguments import (
     CLIArgumentType, CaseInsensitiveList, ignore_type, ArgumentsContext)
 from knack.log import get_logger
 from knack.util import CLIError
-from azure.cli.core.translator import func_completer_wrapper, completer_factory_wrapper, func_type_converter_wrapper
+from azure.cli.core.translator import (func_completer_wrapper, completer_factory_wrapper, func_type_converter_wrapper,
+                                       register_arg_type, arg_type_factory_wrapper)
 
 logger = get_logger(__name__)
 
@@ -83,6 +86,7 @@ def get_datetime_action(date=True, time=True, timezone=True):
 
 
 # pylint: disable=redefined-builtin
+@arg_type_factory_wrapper
 def get_datetime_type(help=None, date=True, time=True, timezone=True):
     help_string = help + ' ' if help else ''
     accepted_formats = []
@@ -193,6 +197,7 @@ def get_three_state_action(positive_label='true', negative_label='false', invert
     return ThreeStateAction
 
 
+@arg_type_factory_wrapper
 def get_three_state_flag(positive_label='true', negative_label='false', invert=False, return_label=False):
     """ Creates a flag-like argument that can also accept positive/negative values. This allows
     consistency between create commands that typically use flags and update commands that require
@@ -231,10 +236,16 @@ class EnumAction(argparse.Action):
         setattr(args, self.dest, values)
 
 
+@arg_type_factory_wrapper
 def get_enum_type(data, default=None):
     """ Creates the argparse choices and type kwargs for a supplied enum type or list of strings. """
     if not data:
         return None
+
+    if isinstance(data, type) and issubclass(data, Enum):
+        enum_model = data
+    else:
+        enum_model = None
 
     # transform enum types, otherwise assume list of string choices
     try:
@@ -248,9 +259,10 @@ def get_enum_type(data, default=None):
         if not default_value:
             raise CLIError("Command authoring exception: unrecognized default '{}' from choices '{}'"
                            .format(default, choices))
-        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=EnumAction, default=default_value)
+        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=EnumAction, enum_model=enum_model,
+                                   default=default_value)
     else:
-        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=EnumAction)
+        arg_type = CLIArgumentType(choices=CaseInsensitiveList(choices), action=EnumAction, enum_model=enum_model)
     return arg_type
 
 
@@ -267,10 +279,13 @@ resource_group_name_type = CLIArgumentType(
         actions=[LocalContextAction.SET, LocalContextAction.GET],
         scopes=[ALL]
     ))
+resource_group_name_type = register_arg_type(resource_group_name_type, 'resource_group_name_type')
 
 name_type = CLIArgumentType(options_list=['--name', '-n'], help='the primary resource name')
+name_type = register_arg_type(name_type, 'name_type')
 
 
+@arg_type_factory_wrapper
 def get_location_type(cli_ctx):
     from azure.cli.core.translator.type_converter import AzLocationNameTypeConverter
     location_type = CLIArgumentType(
@@ -294,6 +309,7 @@ deployment_name_type = CLIArgumentType(
     required=False,
     validator=generate_deployment_name
 )
+deployment_name_type = register_arg_type(deployment_name_type, 'deployment_name_type')
 
 quotes = '""' if platform.system() == 'Windows' else "''"
 quote_text = 'Use {} to clear existing tags.'.format(quotes)
@@ -303,6 +319,7 @@ tags_type = CLIArgumentType(
     help="space-separated tags: key[=value] [key[=value] ...]. {}".format(quote_text),
     nargs='*'
 )
+tags_type = register_arg_type(tags_type, 'tags_type')
 
 tag_type = CLIArgumentType(
     type=validate_tag,
@@ -310,12 +327,14 @@ tag_type = CLIArgumentType(
     nargs='?',
     const=''
 )
+tag_type = register_arg_type(tag_type, 'tag_type')
 
 no_wait_type = CLIArgumentType(
     options_list=['--no-wait', ],
     help='do not wait for the long-running operation to finish',
     action='store_true'
 )
+no_wait_type = register_arg_type(no_wait_type, 'no_wait_type')
 
 zones_type = CLIArgumentType(
     options_list=['--zones', '-z'],
@@ -323,6 +342,7 @@ zones_type = CLIArgumentType(
     help='Space-separated list of availability zones into which to provision the resource.',
     choices=['1', '2', '3']
 )
+zones_type = register_arg_type(zones_type, 'zones_type')
 
 zone_type = CLIArgumentType(
     options_list=['--zone', '-z'],
@@ -330,13 +350,16 @@ zone_type = CLIArgumentType(
     choices=['1', '2', '3'],
     nargs=1
 )
+zone_type = register_arg_type(zone_type, 'zone_type')
 
 vnet_name_type = CLIArgumentType(
     local_context_attribute=LocalContextAttribute(name='vnet_name', actions=[LocalContextAction.GET])
 )
+vnet_name_type = register_arg_type(vnet_name_type, 'vnet_name_type')
 
 subnet_name_type = CLIArgumentType(
     local_context_attribute=LocalContextAttribute(name='subnet_name', actions=[LocalContextAction.GET]))
+subnet_name_type = register_arg_type(subnet_name_type, 'subnet_name_type')
 
 
 def patch_arg_make_required(argument):
@@ -373,6 +396,7 @@ class AzArgumentContext(ArgumentsContext):
         if arg_type:
             arg_type_copy = arg_type.settings.copy()
             arg_type_copy.update(merged_kwargs)
+            arg_type_copy['_arg_type'] = arg_type
             return arg_type_copy
         return merged_kwargs
 
