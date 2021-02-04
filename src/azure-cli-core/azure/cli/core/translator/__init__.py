@@ -8,5 +8,5 @@ from .transformer import func_transformer_wrapper
 from .exception_handler import func_exception_handler_wrapper
 from .action import cls_action_wrapper, cls_action_factory_wrapper
 from .completer import func_completer_wrapper, completer_factory_wrapper
-from .type_converter import func_type_converter_wrapper
+from .type_converter import func_type_converter_wrapper, func_type_converter_factory_wrapper
 from .arg_type import register_arg_type, arg_type_factory_wrapper

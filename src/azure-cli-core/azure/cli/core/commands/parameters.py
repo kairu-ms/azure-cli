@@ -20,7 +20,7 @@ from knack.arguments import (
 from knack.log import get_logger
 from knack.util import CLIError
 from azure.cli.core.translator import (func_completer_wrapper, completer_factory_wrapper, func_type_converter_wrapper,
-                                       register_arg_type, arg_type_factory_wrapper)
+                                       func_type_converter_factory_wrapper, register_arg_type, arg_type_factory_wrapper)
 
 logger = get_logger(__name__)
 
@@ -113,6 +113,7 @@ def json_object_type(json_string):
     return get_json_object(json_string)
 
 
+@func_type_converter_factory_wrapper
 def get_location_name_type(cli_ctx):
     def location_name_type(name):
         if ' ' in name:
@@ -287,11 +288,10 @@ name_type = register_arg_type(name_type, 'name_type')
 
 @arg_type_factory_wrapper
 def get_location_type(cli_ctx):
-    from azure.cli.core.translator.type_converter import AzLocationNameTypeConverter
     location_type = CLIArgumentType(
         options_list=['--location', '-l'],
         completer=get_location_completion_list,
-        type=AzLocationNameTypeConverter(cli_ctx),
+        type=get_location_name_type(cli_ctx),
         help="Location. Values from: `az account list-locations`. "
              "You can configure the default location using `az configure --defaults location=<location>`.",
         metavar='LOCATION',
@@ -396,7 +396,9 @@ class AzArgumentContext(ArgumentsContext):
         if arg_type:
             arg_type_copy = arg_type.settings.copy()
             arg_type_copy.update(merged_kwargs)
-            arg_type_copy['_arg_type'] = arg_type
+            if '_arg_type' in arg_type_copy:
+                raise KeyError('"_arg_type" is a reserved key')
+            arg_type_copy['_arg_type'] = arg_type   # The key name `arg_type` will exist for nested arg_type, so use `_arg_type`. Example: https://github.com/Azure/azure-cli/blob/dd891a940b3a15751ecfbf71b62a1aafb1cfe608/src/azure-cli/azure/cli/command_modules/storage/_params.py#L886-L890
             return arg_type_copy
         return merged_kwargs
 

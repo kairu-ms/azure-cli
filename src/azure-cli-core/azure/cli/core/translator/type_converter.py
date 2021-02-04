@@ -60,28 +60,11 @@ class AzFuncTypeConverterByFactory(AzTypeConverter):
         return "{}#{}".format(self.import_module, self.import_name)
 
 
-class AzLocationNameTypeConverter(AzTypeConverter):
-
-    def __init__(self, cli_ctx):
-        self.cli_ctx = cli_ctx
-        self.import_module = inspect.getmodule(self).__name__
-        self.import_name = self.__class__.__name__
-        self.kwargs = {
-            'cli_ctx': 'cli_ctx'
-        }
-
-    def __call__(self, name):
-        from azure.cli.core.commands.parameters import get_subscription_locations
-        if ' ' in name:
-            # if display name is provided, attempt to convert to short form name
-            name = next((location.name for location in get_subscription_locations(self.cli_ctx)
-                         if location.display_name.lower() == name.lower()), name)
-        return name
-
-    def __str__(self):
-        return "{}#{}".format(self.import_module, self.import_name)
-
-
 def func_type_converter_wrapper(func):
     return AzFuncTypeConverter(func)
 
+
+def func_type_converter_factory_wrapper(factory):
+    def wrapper(*args, **kwargs):
+        return AzFuncTypeConverterByFactory(factory, args, kwargs)
+    return wrapper
