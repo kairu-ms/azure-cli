@@ -8,7 +8,16 @@ from knack.arguments import CLIArgumentType
 
 
 class AzArgType(CLIArgumentType):
-    pass
+
+    def __init__(self, instance):
+        self._is_registed = False
+        super(AzArgType, self).__init__(**instance.settings)
+        self._is_registed = True
+
+    def update(self, *args, **kwargs):
+        if self._is_registed:
+            raise NotImplementedError("Not support to update registered arg type")
+        super(AzArgType, self).update(*args, **kwargs)
 
 
 class AzArgTypeInstance(AzArgType):
@@ -18,12 +27,12 @@ class AzArgTypeInstance(AzArgType):
         self.register_name = register_name
         if not isinstance(instance, CLIArgumentType):
             raise TypeError('Expect type is CLIArgumentType. Got "{}"'.format(type(instance)))
-        super(AzArgTypeInstance, self).__init__(overrides=instance)
+        super(AzArgTypeInstance, self).__init__(instance=instance)
 
 
 class AzArgTypeByFactory(AzArgType):
 
-    def __init__(self, factory, args, kwargs):
+    def __init__(self, instance, factory, args, kwargs):
         if isinstance(factory, types.FunctionType):  # support a factory function which return value is callable
             sig = inspect.signature(factory)
         elif isinstance(factory, type):
@@ -42,11 +51,9 @@ class AzArgTypeByFactory(AzArgType):
             for key, value in zip(keys, args):
                 self.kwargs[key] = value
         self.kwargs.update(kwargs)
-
-        instance = factory(*args, **kwargs)
         if not isinstance(instance, CLIArgumentType):
             raise TypeError('Expect type is CLIArgumentType. Got "{}"'.format(type(instance)))
-        super(AzArgTypeByFactory, self).__init__(overrides=instance)
+        super(AzArgTypeByFactory, self).__init__(instance=instance)
 
 
 def register_arg_type(instance, register_name):
@@ -57,5 +64,9 @@ def register_arg_type(instance, register_name):
 
 def arg_type_factory_wrapper(factory):
     def wrapper(*args, **kwargs):
-        return AzArgTypeByFactory(factory, args, kwargs)
+        instance = factory(*args, **kwargs)
+        if instance is None:
+            return None
+        else:
+            return AzArgTypeByFactory(instance, factory, args, kwargs)
     return wrapper
