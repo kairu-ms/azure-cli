@@ -4,8 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
+from azure.cli.core.translator import func_exception_handler_wrapper
 
 
+@func_exception_handler_wrapper
 def billing_exception_handler(ex):
     from azure.mgmt.billing.models import ErrorResponseException
     if isinstance(ex, ErrorResponseException):

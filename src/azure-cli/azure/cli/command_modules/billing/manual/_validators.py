@@ -5,8 +5,10 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+from azure.cli.core.translator import func_validator_wrapper
 
 
+@func_validator_wrapper
 def billing_invoice_download_validator(namespace):
     from azure.cli.core.azclierror import (
         RequiredArgumentMissingError,
@@ -68,6 +70,7 @@ def billing_invoice_download_validator(namespace):
             )
 
 
+@func_validator_wrapper
 def billing_invoice_show_validator(namespace):
     from azure.cli.core.azclierror import (
         RequiredArgumentMissingError,
@@ -89,6 +92,7 @@ def billing_invoice_show_validator(namespace):
             raise RequiredArgumentMissingError("--name is also required")
 
 
+@func_validator_wrapper
 def billing_profile_show_validator(namespace):
 
     from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
@@ -99,6 +103,7 @@ def billing_profile_show_validator(namespace):
         )
 
 
+@func_validator_wrapper
 def billing_policy_update_validator(namespace):
     from azure.cli.core.azclierror import (
         RequiredArgumentMissingError,
@@ -126,6 +131,7 @@ def billing_policy_update_validator(namespace):
         )
 
 
+@func_validator_wrapper
 def billing_permission_list_validator(namespace):
     from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 

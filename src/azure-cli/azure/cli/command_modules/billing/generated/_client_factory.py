@@ -7,8 +7,10 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+from azure.cli.core.translator import func_client_factory_wrapper
 
 
+@func_client_factory_wrapper
 def cf_billing_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azure.mgmt.billing import BillingManagementClient
@@ -16,65 +18,81 @@ def cf_billing_cl(cli_ctx, *_):
                                    BillingManagementClient)
 
 
+@func_client_factory_wrapper
 def cf_account(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).billing_accounts
 
 
+@func_client_factory_wrapper
 def cf_balance(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).available_balances
 
 
+@func_client_factory_wrapper
 def cf_instruction(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).instructions
 
 
+@func_client_factory_wrapper
 def cf_profile(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).billing_profiles
 
 
+@func_client_factory_wrapper
 def cf_customer(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).customers
 
 
+@func_client_factory_wrapper
 def cf_invoice_section(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).invoice_sections
 
 
+@func_client_factory_wrapper
 def cf_permission(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).billing_permissions
 
 
+@func_client_factory_wrapper
 def cf_subscription(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).billing_subscriptions
 
 
+@func_client_factory_wrapper
 def cf_product(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).products
 
 
+@func_client_factory_wrapper
 def cf_invoice(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).invoices
 
 
+@func_client_factory_wrapper
 def cf_transaction(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).transactions
 
 
+@func_client_factory_wrapper
 def cf_policy(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).policies
 
 
+@func_client_factory_wrapper
 def cf_property(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).billing_property
 
 
+@func_client_factory_wrapper
 def cf_role_definition(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).billing_role_definitions
 
 
+@func_client_factory_wrapper
 def cf_role_assignment(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).billing_role_assignments
 
 
+@func_client_factory_wrapper
 def cf_agreement(cli_ctx, *_):
     return cf_billing_cl(cli_ctx).agreements

@@ -12,8 +12,10 @@
 import argparse
 from collections import defaultdict
 from knack.util import CLIError
+from azure.cli.core.translator import cls_action_wrapper
 
 
+@cls_action_wrapper
 class AddSoldTo(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -64,6 +66,7 @@ class AddSoldTo(argparse.Action):
         return d
 
 
+@cls_action_wrapper
 class AddEnabledAzurePlans(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -86,6 +89,7 @@ class AddEnabledAzurePlans(argparse._AppendAction):
         return d
 
 
+@cls_action_wrapper
 class AddLabels(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
