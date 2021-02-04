@@ -51,6 +51,7 @@ from azure.cli.command_modules.network._actions import (
 from azure.cli.core.util import get_json_object
 from azure.cli.core.commands.parameters import json_object_type as get_json_object
 from azure.cli.core.profiles import ResourceType
+from azure.cli.core.translator import register_arg_type
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -93,21 +94,48 @@ def load_arguments(self, _):
     routing_registry_values = ['ARIN', 'APNIC', 'AFRINIC', 'LACNIC', 'RIPENCC', 'RADB', 'ALTDB', 'LEVEL3']
 
     name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
+    name_arg_type = register_arg_type(name_arg_type, 'name_arg_type')
+
     nic_type = CLIArgumentType(options_list='--nic-name', metavar='NAME', help='The network interface (NIC).', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/networkInterfaces'))
+    nic_type = register_arg_type(nic_type, 'nic_type')
+
     nsg_name_type = CLIArgumentType(options_list='--nsg-name', metavar='NAME', help='Name of the network security group.')
+    nsg_name_type = register_arg_type(nsg_name_type, 'nsg_name_type')
+
     circuit_name_type = CLIArgumentType(options_list='--circuit-name', metavar='NAME', help='ExpressRoute circuit name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRouteCircuits'))
+    circuit_name_type = register_arg_type(circuit_name_type, 'circuit_name_type')
+
     virtual_network_name_type = CLIArgumentType(options_list='--vnet-name', metavar='NAME', help='The virtual network (VNet) name.', completer=get_resource_name_completion_list('Microsoft.Network/virtualNetworks'),
                                                 local_context_attribute=LocalContextAttribute(name='vnet_name', actions=[LocalContextAction.GET]))
+    virtual_network_name_type = register_arg_type(virtual_network_name_type, 'virtual_network_name_type')
+
     subnet_name_type = CLIArgumentType(options_list='--subnet-name', metavar='NAME', help='The subnet name.',
                                        local_context_attribute=LocalContextAttribute(name='subnet_name', actions=[LocalContextAction.GET]))
+    subnet_name_type = register_arg_type(subnet_name_type, 'subnet_name_type')
+
     load_balancer_name_type = CLIArgumentType(options_list='--lb-name', metavar='NAME', help='The load balancer name.', completer=get_resource_name_completion_list('Microsoft.Network/loadBalancers'), id_part='name')
+    load_balancer_name_type = register_arg_type(load_balancer_name_type, 'load_balancer_name_type')
+
     private_ip_address_type = CLIArgumentType(help='Static private IP address to use.', validator=validate_private_ip_address)
+    private_ip_address_type = register_arg_type(private_ip_address_type, 'private_ip_address_type')
+
     cookie_based_affinity_type = CLIArgumentType(arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True))
+    cookie_based_affinity_type = register_arg_type(cookie_based_affinity_type, 'cookie_based_affinity_type')
+
     http_protocol_type = CLIArgumentType(get_enum_type(ApplicationGatewayProtocol))
+    http_protocol_type = register_arg_type(http_protocol_type, 'http_protocol_type')
+
     ag_servers_type = CLIArgumentType(nargs='+', help='Space-separated list of IP addresses or DNS names corresponding to backend servers.', validator=get_servers_validator())
+    ag_servers_type = register_arg_type(ag_servers_type, 'ag_servers_type')
+
     app_gateway_name_type = CLIArgumentType(help='Name of the application gateway.', options_list='--gateway-name', completer=get_resource_name_completion_list('Microsoft.Network/applicationGateways'), id_part='name')
+    app_gateway_name_type = register_arg_type(app_gateway_name_type, 'app_gateway_name_type')
+
     express_route_link_macsec_cipher_type = CLIArgumentType(get_enum_type(ExpressRouteLinkMacSecCipher))
+    express_route_link_macsec_cipher_type = register_arg_type(express_route_link_macsec_cipher_type, 'express_route_link_macsec_cipher_type')
+
     express_route_link_admin_state_type = CLIArgumentType(get_enum_type(ExpressRouteLinkAdminState))
+    express_route_link_admin_state_type = register_arg_type(express_route_link_admin_state_type, 'express_route_link_admin_state_type')
 
     # region NetworkRoot
     with self.argument_context('network') as c:
@@ -288,7 +316,11 @@ def load_arguments(self, _):
 
     with self.argument_context('network application-gateway rewrite-rule') as c:
         rewrite_rule_set_name_type = CLIArgumentType(help='Name of the rewrite rule set.', options_list='--rule-set-name', id_part='child_name_1')
+        rewrite_rule_set_name_type = register_arg_type(rewrite_rule_set_name_type, 'rewrite_rule_set_name_type')
+
         rewrite_rule_name_type = CLIArgumentType(help='Name of the rewrite rule.', options_list='--rule-name', id_part='child_name_2')
+        rewrite_rule_name_type = register_arg_type(rewrite_rule_name_type, 'rewrite_rule_name_type')
+
         c.argument('rule_name', rewrite_rule_name_type, options_list=['--name', '-n'])
         c.argument('rule_set_name', rewrite_rule_set_name_type)
         c.argument('application_gateway_name', app_gateway_name_type)
@@ -703,11 +735,23 @@ def load_arguments(self, _):
     # region ExpressRoutes
     device_path_values = ['primary', 'secondary']
     er_circuit_name_type = CLIArgumentType(options_list='--circuit-name', metavar='NAME', help='ExpressRoute circuit name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRouteCircuits'))
+    er_circuit_name_type = register_arg_type(er_circuit_name_type, 'er_circuit_name_type')
+
     er_gateway_name_type = CLIArgumentType(options_list='--gateway-name', metavar='NAME', help='ExpressRoute gateway name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRouteGateways'))
+    er_gateway_name_type = register_arg_type(er_gateway_name_type, 'er_gateway_name_type')
+
     er_port_name_type = CLIArgumentType(options_list='--port-name', metavar='NAME', help='ExpressRoute port name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRoutePorts'))
+    er_port_name_type = register_arg_type(er_port_name_type, 'er_port_name_type')
+
     er_bandwidth_type = CLIArgumentType(options_list='--bandwidth', nargs='+')
+    er_bandwidth_type = register_arg_type(er_bandwidth_type, 'er_bandwidth_type')
+
     sku_family_type = CLIArgumentType(help='Chosen SKU family of ExpressRoute circuit.', arg_type=get_enum_type(ExpressRouteCircuitSkuFamily), default=ExpressRouteCircuitSkuFamily.metered_data.value)
+    sku_family_type = register_arg_type(sku_family_type, 'sku_family_type')
+
     sku_tier_type = CLIArgumentType(help='SKU Tier of ExpressRoute circuit.', arg_type=get_enum_type(ExpressRouteCircuitSkuTier), default=ExpressRouteCircuitSkuTier.standard.value)
+    sku_tier_type = register_arg_type(sku_tier_type, 'sku_tier_type')
+
     with self.argument_context('network express-route') as c:
         c.argument('circuit_name', circuit_name_type, options_list=['--name', '-n'])
         c.argument('sku_family', sku_family_type)
@@ -839,6 +883,7 @@ def load_arguments(self, _):
 
     # region PrivateEndpoint
     private_endpoint_name = CLIArgumentType(options_list='--endpoint-name', id_part='name', help='Name of the private endpoint.', completer=get_resource_name_completion_list('Microsoft.Network/interfaceEndpoints'))
+    private_endpoint_name = register_arg_type(private_endpoint_name, 'private_endpoint_name')
 
     with self.argument_context('network private-endpoint') as c:
         c.argument('private_endpoint_name', private_endpoint_name, options_list=['--name', '-n'])
@@ -864,6 +909,8 @@ def load_arguments(self, _):
 
     # region PrivateLinkService
     service_name = CLIArgumentType(options_list='--service-name', id_part='name', help='Name of the private link service.', completer=get_resource_name_completion_list('Microsoft.Network/privateLinkServices'))
+    service_name = register_arg_type(service_name, 'service_name')
+
     with self.argument_context('network private-link-service') as c:
         c.argument('service_name', service_name, options_list=['--name', '-n'])
         c.argument('auto_approval', nargs='+', help='Space-separated list of subscription IDs to auto-approve.', validator=get_subscription_list_validator('auto_approval', 'PrivateLinkServicePropertiesAutoApproval'))
@@ -1661,6 +1708,7 @@ def load_arguments(self, _):
 
     # region NetworkProfile
     network_profile_name = CLIArgumentType(options_list='--profile-name', metavar='NAME', help='The network profile name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/networkProfiles'))
+    network_profile_name = register_arg_type(network_profile_name, 'network_profile_name')
 
     with self.argument_context('network profile') as c:
         c.argument('network_profile_name', network_profile_name, options_list=['--name', '-n'])
@@ -1738,6 +1786,7 @@ def load_arguments(self, _):
 
     # region ServiceEndpoint
     service_endpoint_policy_name = CLIArgumentType(options_list='--policy-name', id_part='name', help='Name of the service endpoint policy.', completer=get_resource_name_completion_list('Microsoft.Network/serviceEndpointPolicies'))
+    service_endpoint_policy_name = register_arg_type(service_endpoint_policy_name, 'service_endpoint_policy_name')
 
     with self.argument_context('network service-endpoint policy') as c:
         c.argument('service_endpoint_policy_name', service_endpoint_policy_name, options_list=['--name', '-n'])
@@ -1758,6 +1807,8 @@ def load_arguments(self, _):
 
     # region TrafficManagers
     monitor_protocol_type = CLIArgumentType(help='Monitor protocol.', arg_type=get_enum_type(MonitorProtocol, default='http'))
+    monitor_protocol_type = register_arg_type(monitor_protocol_type, 'monitor_protocol_type')
+
     with self.argument_context('network traffic-manager profile') as c:
         c.argument('traffic_manager_profile_name', name_arg_type, id_part='name', help='Traffic manager profile name', completer=get_resource_name_completion_list('Microsoft.Network/trafficManagerProfiles'))
         c.argument('profile_name', name_arg_type, id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/trafficManagerProfiles'))
@@ -1881,8 +1932,14 @@ def load_arguments(self, _):
 
     # region VirtualNetworkGateways
     vnet_gateway_type = CLIArgumentType(help='The gateway type.', arg_type=get_enum_type(VirtualNetworkGatewayType), default=VirtualNetworkGatewayType.vpn.value)
+    vnet_gateway_type = register_arg_type(vnet_gateway_type, 'vnet_gateway_type')
+
     vnet_gateway_sku_type = CLIArgumentType(help='VNet gateway SKU.', arg_type=get_enum_type(VirtualNetworkGatewaySkuName), default=VirtualNetworkGatewaySkuName.basic.value)
+    vnet_gateway_sku_type = register_arg_type(vnet_gateway_sku_type, 'vnet_gateway_sku_type')
+
     vnet_gateway_routing_type = CLIArgumentType(help='VPN routing type.', arg_type=get_enum_type(VpnType), default=VpnType.route_based.value)
+    vnet_gateway_routing_type = register_arg_type(vnet_gateway_routing_type, 'vnet_gateway_routing_type')
+
     with self.argument_context('network vnet-gateway') as c:
         c.argument('virtual_network_gateway_name', options_list=['--name', '-n'], help='Name of the VNet gateway.', completer=get_resource_name_completion_list('Microsoft.Network/virtualNetworkGateways'), id_part='name')
         c.argument('cert_name', help='Root certificate name', options_list=['--name', '-n'])

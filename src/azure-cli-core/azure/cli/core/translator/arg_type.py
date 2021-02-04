@@ -50,7 +50,8 @@ class AzArgTypeByFactory(AzArgType):
 
 
 def register_arg_type(instance, register_name):
-    import_module = inspect.getmodule(instance).__name__
+    parent_frame = inspect.stack()[1].frame
+    import_module = inspect.getmodule(parent_frame).__name__
     return AzArgTypeInstance(instance, import_module, register_name)
 
 
