@@ -259,17 +259,6 @@ def load_arguments(self, _):
         c.argument('account_name', type=str, help='The ID that uniquely identifies a billing account.')
         c.argument('invoice_name', type=str, help='The ID that uniquely identifies an invoice.')
 
-    with self.argument_context('billing policy update') as c:
-        c.argument('account_name', type=str, help='The ID that uniquely identifies a billing account.')
-        c.argument('profile_name', type=str, help='The ID that uniquely identifies a billing profile.')
-        c.argument('marketplace_purchases', arg_type=get_enum_type(['AllAllowed', 'OnlyFreeAllowed', 'NotAllowed']),
-                   help='The policy that controls whether Azure marketplace purchases are allowed for a billing '
-                   'profile.')
-        c.argument('reservation_purchases', arg_type=get_enum_type(['Allowed', 'NotAllowed']), help='The policy that '
-                   'controls whether Azure reservation purchases are allowed for a billing profile.')
-        c.argument('view_charges', arg_type=get_enum_type(['Allowed', 'NotAllowed']), help='The policy that controls '
-                   'whether users with Azure RBAC access to a subscription can view its charges.')
-
     with self.argument_context('billing property update') as c:
         c.argument('cost_center', type=str, help='The cost center applied to the subscription.')
 

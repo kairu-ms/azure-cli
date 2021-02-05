@@ -1,4 +1,5 @@
 {
+  "created": "2021-02-05 10:44:23.496061",
   "az": {
     "command-groups": {
       "billing": {
@@ -224,26 +225,6 @@
                 {
                   "name": "List permissions by customer scope",
                   "text": "az billing permission list --account-name \"{billingAccountName}\" --customer-name \"{customerName}\""
-                }
-              ]
-            }
-          },
-          "policy": {
-            "commands": {
-              "show": [
-                {
-                  "name": "List the policies for a billing profile",
-                  "text": "az billing policy show --account-name \"{billingAccountName}\" --profile-name \"{billingProfileName}\""
-                },
-                {
-                  "name": "List the policies for a customer",
-                  "text": "az billing policy show --account-name \"{billingAccountName}\" --customer-name \"{customerName}\""
-                }
-              ],
-              "update": [
-                {
-                  "name": "Update the policy for a billing profile",
-                  "text": "az billing policy update --account-name \"{billingAccountName}\" --profile-name \"{billingProfileName}\" --marketplace-purchases \"OnlyFreeAllowed\" --reservation-purchases \"NotAllowed\" --view-charges \"Allowed\""
                 }
               ]
             }

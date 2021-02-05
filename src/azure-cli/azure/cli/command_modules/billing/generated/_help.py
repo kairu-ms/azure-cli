@@ -560,22 +560,6 @@ charges."
                az billing transaction list --account-name "{billingAccountName}" --invoice-name "{invoiceName}"
 """
 
-helps['billing policy'] = """
-    type: group
-    short-summary: billing policy
-"""
-
-helps['billing policy update'] = """
-    type: command
-    short-summary: "Updates the policies for a billing profile. This operation is supported only for billing accounts \
-with agreement type Microsoft Customer Agreement."
-    examples:
-      - name: UpdatePolicy
-        text: |-
-               az billing policy update --account-name "{billingAccountName}" --profile-name "{billingProfileName}" \
---marketplace-purchases "OnlyFreeAllowed" --reservation-purchases "NotAllowed" --view-charges "Allowed"
-"""
-
 helps['billing property'] = """
     type: group
     short-summary: billing property

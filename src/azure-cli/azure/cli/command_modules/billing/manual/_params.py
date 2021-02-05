@@ -73,17 +73,6 @@ def load_arguments(self, _):
             help="When provided, it must work with --invoice-name to get an invoice by subscription ID and invoice ID",
         )
 
-    with self.argument_context("billing policy") as c:
-        c.argument(
-            "account_name", help="The ID that uniquely identifies a billing account"
-        )
-        c.argument(
-            "profile_name",
-            type=str,
-            help="The ID that uniquely identifies a billing profile.",
-        )
-        c.argument("customer_name", help="The ID that uniquely identifies a customer")
-
     with self.argument_context("billing profile create") as c:
         c.argument("bill_to", action=AddSoldTo, nargs="*", help="Billing address.")
 

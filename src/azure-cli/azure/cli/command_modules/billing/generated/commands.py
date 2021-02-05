@@ -121,13 +121,6 @@ def load_command_table(self, _):
                             is_preview=True) as g:
         g.custom_command('list', 'billing_transaction_list')
 
-    from ..generated._client_factory import cf_policy
-    billing_policy = CliCommandType(
-        operations_tmpl='azure.mgmt.billing.operations#PoliciesOperations.{}',
-        client_factory=cf_policy)
-    with self.command_group('billing policy', billing_policy, client_factory=cf_policy, is_preview=True) as g:
-        g.custom_command('update', 'billing_policy_update')
-
     from ..generated._client_factory import cf_property
     billing_property = CliCommandType(
         operations_tmpl='azure.mgmt.billing.operations#BillingPropertyOperations.{}',

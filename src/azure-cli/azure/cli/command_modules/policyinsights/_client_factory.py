@@ -4,12 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 
-def cf_policy(cli_ctx, **_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azure.cli.core.profiles import ResourceType
-    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_POLICY)
-
-
 def cf_policy_insights(cli_ctx, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azure.mgmt.policyinsights import PolicyInsightsClient

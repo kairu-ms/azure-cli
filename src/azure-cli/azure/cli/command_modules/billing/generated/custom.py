@@ -392,21 +392,6 @@ def billing_transaction_list(client,
                                   invoice_name=invoice_name)
 
 
-def billing_policy_update(client,
-                          account_name,
-                          profile_name,
-                          marketplace_purchases=None,
-                          reservation_purchases=None,
-                          view_charges=None):
-    parameters = {}
-    parameters['marketplace_purchases'] = marketplace_purchases
-    parameters['reservation_purchases'] = reservation_purchases
-    parameters['view_charges'] = view_charges
-    return client.update(billing_account_name=account_name,
-                         billing_profile_name=profile_name,
-                         parameters=parameters)
-
-
 def billing_property_show(client):
     return client.get()
 
