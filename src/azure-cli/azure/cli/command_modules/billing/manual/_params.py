@@ -85,10 +85,6 @@ def load_arguments(self, _):
             help="The ID that uniquely identifies a billing profile.",
         )
         c.argument("customer_name", help="The ID that uniquely identifies a customer")
-        c.argument('marketplace_purchases', arg_type=get_enum_type(['AllAllowed', 'OnlyFreeAllowed', 'NotAllowed',
-                                                                    'OnlyPurchasedAllowed']),
-                   help='The policy that controls whether Azure marketplace purchases are allowed for a billing '
-                        'profile.')
 
     with self.argument_context("billing profile create") as c:
         c.argument("bill_to", action=AddSoldTo, nargs="*", help="Billing address.")
