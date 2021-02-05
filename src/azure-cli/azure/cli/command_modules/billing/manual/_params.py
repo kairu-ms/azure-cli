@@ -80,7 +80,6 @@ def load_arguments(self, _):
         c.argument(
             "profile_name",
             type=str,
-            help="The ID that uniquely identifies a billing profile.",
         )
         c.argument("customer_name", help="The ID that uniquely identifies a customer")
 
