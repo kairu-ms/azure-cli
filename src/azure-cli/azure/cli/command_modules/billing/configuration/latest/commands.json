@@ -1,5 +1,5 @@
 {
-  "created": "2021-02-05 11:42:02.716942",
+  "created": "2021-02-05 11:45:45.757254",
   "imports": {
     "get_three_state_action": "azure.cli.core.commands.parameters#get_three_state_action",
     "get_three_state_flag": "azure.cli.core.commands.parameters#get_three_state_flag",
@@ -1147,6 +1147,7 @@
                       "kwargs": {
                         "data": [
                           "AllAllowed",
+                          "OnlyFreeAllowed",
                           "NotAllowed"
                         ]
                       }
@@ -1157,6 +1158,7 @@
                     "help": "The policy that controls whether Azure marketplace purchases are allowed for a billing profile.",
                     "choices": [
                       "AllAllowed",
+                      "OnlyFreeAllowed",
                       "NotAllowed"
                     ],
                     "action": "$EnumAction"
