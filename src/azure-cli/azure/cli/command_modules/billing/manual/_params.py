@@ -51,9 +51,6 @@ def load_arguments(self, _):
             "download_token",
             help="The download token with document source and document ID",
         )
-        c.argument(
-            "download_urls", help="Space-separated list of download urls for individual"
-        )
 
     with self.argument_context("billing invoice show") as c:
         c.argument(

@@ -1,4 +1,5 @@
 {
+  "created": "2021-02-05 10:25:16.908559",
   "imports": {
     "get_three_state_action": "azure.cli.core.commands.parameters#get_three_state_action",
     "get_three_state_flag": "azure.cli.core.commands.parameters#get_three_state_flag",
@@ -627,12 +628,6 @@
                       "--download-token"
                     ],
                     "help": "The download token with document source and document ID"
-                  },
-                  "download_urls": {
-                    "options": [
-                      "--download-urls"
-                    ],
-                    "help": "Space-separated list of download urls for individual"
                   },
                   "invoice_name": {
                     "options": [
