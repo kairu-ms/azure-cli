@@ -261,7 +261,7 @@ def load_arguments(self, _):
 
     with self.argument_context('billing policy update') as c:
         c.argument('account_name', type=str, help='The ID that uniquely identifies a billing account.')
-        c.argument('profile_name', type=str)
+        c.argument('profile_name', type=str, help='This is help in generated/_params.py')
         c.argument('marketplace_purchases', arg_type=get_enum_type(['AllAllowed', 'OnlyFreeAllowed', 'NotAllowed']),
                    help='The policy that controls whether Azure marketplace purchases are allowed for a billing '
                    'profile.')

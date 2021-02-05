@@ -80,6 +80,7 @@ def load_arguments(self, _):
         c.argument(
             "profile_name",
             type=str,
+            help="This is help in manual/_params.py",
         )
         c.argument("customer_name", help="The ID that uniquely identifies a customer")
 

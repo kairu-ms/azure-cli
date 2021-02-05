@@ -566,6 +566,9 @@ helps['billing policy update'] = """
     type: command
     short-summary: "Update the policies for a billing profile. This operation is supported only for billing accounts \
 with agreement type Microsoft Customer Agreement."
+    parameters:
+      - name: --profile-name
+        long-summary: This is long summary in manual/_help.py.
     examples:
       - name: Update the policy for a billing profile
         text: |-
