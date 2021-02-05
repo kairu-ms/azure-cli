@@ -15,64 +15,6 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from ..generated._client_factory import cf_account
-    billing_account = CliCommandType(
-        operations_tmpl='azure.mgmt.billing.operations#BillingAccountsOperations.{}',
-        client_factory=cf_account)
-    with self.command_group('billing account', billing_account, client_factory=cf_account, is_preview=True) as g:
-        g.custom_command('list', 'billing_account_list')
-        g.custom_show_command('show', 'billing_account_show')
-        g.custom_command('update', 'billing_account_update', supports_no_wait=True)
-        g.custom_wait_command('wait', 'billing_account_show')
-
-    from ..generated._client_factory import cf_balance
-    billing_balance = CliCommandType(
-        operations_tmpl='azure.mgmt.billing.operations#AvailableBalancesOperations.{}',
-        client_factory=cf_balance)
-    with self.command_group('billing balance', billing_balance, client_factory=cf_balance, is_preview=True) as g:
-        g.custom_show_command('show', 'billing_balance_show')
-
-    from ..generated._client_factory import cf_instruction
-    billing_instruction = CliCommandType(
-        operations_tmpl='azure.mgmt.billing.operations#InstructionsOperations.{}',
-        client_factory=cf_instruction)
-    with self.command_group('billing instruction', billing_instruction, client_factory=cf_instruction,
-                            is_preview=True) as g:
-        g.custom_command('list', 'billing_instruction_list')
-        g.custom_show_command('show', 'billing_instruction_show')
-        g.custom_command('create', 'billing_instruction_create')
-
-    from ..generated._client_factory import cf_profile
-    billing_profile = CliCommandType(
-        operations_tmpl='azure.mgmt.billing.operations#BillingProfilesOperations.{}',
-        client_factory=cf_profile)
-    with self.command_group('billing profile', billing_profile, client_factory=cf_profile, is_preview=True) as g:
-        g.custom_command('list', 'billing_profile_list')
-        g.custom_show_command('show', 'billing_profile_show')
-        g.custom_command('create', 'billing_profile_create', supports_no_wait=True)
-        g.custom_command('update', 'billing_profile_update', supports_no_wait=True)
-        g.custom_wait_command('wait', 'billing_profile_show')
-
-    from ..generated._client_factory import cf_customer
-    billing_customer = CliCommandType(
-        operations_tmpl='azure.mgmt.billing.operations#CustomersOperations.{}',
-        client_factory=cf_customer)
-    with self.command_group('billing customer', billing_customer, client_factory=cf_customer, is_preview=True) as g:
-        g.custom_command('list', 'billing_customer_list')
-        g.custom_show_command('show', 'billing_customer_show')
-
-    from ..generated._client_factory import cf_invoice_section
-    billing_invoice_section = CliCommandType(
-        operations_tmpl='azure.mgmt.billing.operations#InvoiceSectionsOperations.{}',
-        client_factory=cf_invoice_section)
-    with self.command_group('billing invoice section', billing_invoice_section,
-                            client_factory=cf_invoice_section) as g:
-        g.custom_command('list', 'billing_invoice_section_list')
-        g.custom_show_command('show', 'billing_invoice_section_show')
-        g.custom_command('create', 'billing_invoice_section_create', supports_no_wait=True)
-        g.custom_command('update', 'billing_invoice_section_update', supports_no_wait=True)
-        g.custom_wait_command('wait', 'billing_invoice_section_show')
-
     from ..generated._client_factory import cf_permission
     billing_permission = CliCommandType(
         operations_tmpl='azure.mgmt.billing.operations#BillingPermissionsOperations.{}',
@@ -161,3 +103,61 @@ def load_command_table(self, _):
                             is_preview=True) as g:
         g.custom_command('list', 'billing_agreement_list')
         g.custom_show_command('show', 'billing_agreement_show')
+
+    from ..generated._client_factory import cf_account
+    billing_account = CliCommandType(
+        operations_tmpl='azure.mgmt.billing.operations#BillingAccountsOperations.{}',
+        client_factory=cf_account)
+    with self.command_group('billing account', billing_account, client_factory=cf_account, is_preview=True) as g:
+        g.custom_command('list', 'billing_account_list')
+        g.custom_show_command('show', 'billing_account_show')
+        g.custom_command('update', 'billing_account_update', supports_no_wait=True)
+        g.custom_wait_command('wait', 'billing_account_show')
+
+    from ..generated._client_factory import cf_balance
+    billing_balance = CliCommandType(
+        operations_tmpl='azure.mgmt.billing.operations#AvailableBalancesOperations.{}',
+        client_factory=cf_balance)
+    with self.command_group('billing balance', billing_balance, client_factory=cf_balance, is_preview=True) as g:
+        g.custom_show_command('show', 'billing_balance_show')
+
+    from ..generated._client_factory import cf_instruction
+    billing_instruction = CliCommandType(
+        operations_tmpl='azure.mgmt.billing.operations#InstructionsOperations.{}',
+        client_factory=cf_instruction)
+    with self.command_group('billing instruction', billing_instruction, client_factory=cf_instruction,
+                            is_preview=True) as g:
+        g.custom_command('list', 'billing_instruction_list')
+        g.custom_show_command('show', 'billing_instruction_show')
+        g.custom_command('create', 'billing_instruction_create')
+
+    from ..generated._client_factory import cf_profile
+    billing_profile = CliCommandType(
+        operations_tmpl='azure.mgmt.billing.operations#BillingProfilesOperations.{}',
+        client_factory=cf_profile)
+    with self.command_group('billing profile', billing_profile, client_factory=cf_profile, is_preview=True) as g:
+        g.custom_command('list', 'billing_profile_list')
+        g.custom_show_command('show', 'billing_profile_show')
+        g.custom_command('create', 'billing_profile_create', supports_no_wait=True)
+        g.custom_command('update', 'billing_profile_update', supports_no_wait=True)
+        g.custom_wait_command('wait', 'billing_profile_show')
+
+    from ..generated._client_factory import cf_customer
+    billing_customer = CliCommandType(
+        operations_tmpl='azure.mgmt.billing.operations#CustomersOperations.{}',
+        client_factory=cf_customer)
+    with self.command_group('billing customer', billing_customer, client_factory=cf_customer, is_preview=True) as g:
+        g.custom_command('list', 'billing_customer_list')
+        g.custom_show_command('show', 'billing_customer_show')
+
+    from ..generated._client_factory import cf_invoice_section
+    billing_invoice_section = CliCommandType(
+        operations_tmpl='azure.mgmt.billing.operations#InvoiceSectionsOperations.{}',
+        client_factory=cf_invoice_section)
+    with self.command_group('billing invoice section', billing_invoice_section,
+                            client_factory=cf_invoice_section) as g:
+        g.custom_command('list', 'billing_invoice_section_list')
+        g.custom_show_command('show', 'billing_invoice_section_show')
+        g.custom_command('create', 'billing_invoice_section_create', supports_no_wait=True)
+        g.custom_command('update', 'billing_invoice_section_update', supports_no_wait=True)
+        g.custom_wait_command('wait', 'billing_invoice_section_show')

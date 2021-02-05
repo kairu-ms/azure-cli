@@ -32,6 +32,30 @@ def load_command_table(self, _):
                                  setter_type=billing_instruction,
                                  custom_func_name='billing_instruction_update')
 
+    from ..generated._client_factory import cf_permission
+    billing_permission = CliCommandType(
+        operations_tmpl='azure.mgmt.billing.operations#BillingPermissionsOperations.{}',
+        client_factory=cf_permission)
+    with self.command_group('billing permission', billing_permission, client_factory=cf_permission,
+                            is_preview=True) as g:
+        g.custom_command('list', 'billing_permission_list', validator=billing_permission_list_validator)
+
+    from ..generated._client_factory import cf_role_assignment
+    billing_role_assignment = CliCommandType(
+        operations_tmpl='azure.mgmt.billing.operations#BillingRoleAssignmentsOperations.{}',
+        client_factory=cf_role_assignment)
+    with self.command_group('billing role-assignment', billing_role_assignment, client_factory=cf_role_assignment,
+                            is_preview=True) as g:
+        g.custom_show_command('show', 'billing_role_assignment_show')
+
+    from ..generated._client_factory import cf_role_definition
+    billing_role_definition = CliCommandType(
+        operations_tmpl='azure.mgmt.billing.operations#BillingRoleDefinitionsOperations.{}',
+        client_factory=cf_role_definition)
+    with self.command_group('billing role-definition', billing_role_definition, client_factory=cf_role_definition,
+                            is_preview=True) as g:
+        g.custom_show_command('show', 'billing_role_definition_show')
+
     from ..generated._client_factory import cf_invoice_section
     billing_invoice_section = CliCommandType(
         operations_tmpl="azure.mgmt.billing.operations#InvoiceSectionsOperations.{}",
@@ -67,26 +91,3 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'billing_policy_show', validator=billing_profile_show_validator)
         g.custom_command('update', 'billing_policy_update', validator=billing_policy_update_validator)
 
-    from ..generated._client_factory import cf_permission
-    billing_permission = CliCommandType(
-        operations_tmpl='azure.mgmt.billing.operations#BillingPermissionsOperations.{}',
-        client_factory=cf_permission)
-    with self.command_group('billing permission', billing_permission, client_factory=cf_permission,
-                            is_preview=True) as g:
-        g.custom_command('list', 'billing_permission_list', validator=billing_permission_list_validator)
-
-    from ..generated._client_factory import cf_role_assignment
-    billing_role_assignment = CliCommandType(
-        operations_tmpl='azure.mgmt.billing.operations#BillingRoleAssignmentsOperations.{}',
-        client_factory=cf_role_assignment)
-    with self.command_group('billing role-assignment', billing_role_assignment, client_factory=cf_role_assignment,
-                            is_preview=True) as g:
-        g.custom_show_command('show', 'billing_role_assignment_show')
-
-    from ..generated._client_factory import cf_role_definition
-    billing_role_definition = CliCommandType(
-        operations_tmpl='azure.mgmt.billing.operations#BillingRoleDefinitionsOperations.{}',
-        client_factory=cf_role_definition)
-    with self.command_group('billing role-definition', billing_role_definition, client_factory=cf_role_definition,
-                            is_preview=True) as g:
-        g.custom_show_command('show', 'billing_role_definition_show')

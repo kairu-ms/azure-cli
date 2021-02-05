@@ -19,12 +19,6 @@ def load_arguments(self, _):
             help="The ID that uniquely identifies a billing account.",
         )
         c.argument(
-            "billing_profile_name",     # override the parameter name comes from getter method
-            options_list=["--profile-name"],
-            type=str,
-            help="The ID that uniquely identifies a billing profile.",
-        )
-        c.argument(
             "instruction_name", options_list=["--name", "-n"], type=str, help="Instruction Name."
         )
         c.argument(
@@ -40,6 +34,12 @@ def load_arguments(self, _):
         )
         c.argument(
             "creation_date", help="The date this billing instruction was created."
+        )
+        c.argument(
+            "billing_profile_name",     # override the parameter name comes from getter method
+            options_list=["--profile-name"],
+            type=str,
+            help="The ID that uniquely identifies a billing profile.",
         )
 
     with self.argument_context("billing invoice") as c:
@@ -92,6 +92,16 @@ def load_arguments(self, _):
 
     with self.argument_context("billing role-definition") as c:
         c.argument(
+            "profile_name",
+            type=str,
+            help="The ID that uniquely identifies a billing profile.",
+        )
+        c.argument(
+            "invoice_section_name",
+            type=str,
+            help="The ID that uniquely identifies an invoice section.",
+        )
+        c.argument(
             "name",
             options_list=["--name", "-n"],
             type=str,
@@ -101,16 +111,6 @@ def load_arguments(self, _):
             "account_name",
             type=str,
             help="The ID that uniquely identifies a billing account.",
-        )
-        c.argument(
-            "profile_name",
-            type=str,
-            help="The ID that uniquely identifies a billing profile.",
-        )
-        c.argument(
-            "invoice_section_name",
-            type=str,
-            help="The ID that uniquely identifies an invoice section.",
         )
 
     with self.argument_context("billing role-assignment") as c:
