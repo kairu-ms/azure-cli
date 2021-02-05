@@ -544,6 +544,34 @@ charges."
                az billing transaction list --account-name "{billingAccountName}" --invoice-name "{invoiceName}"
 """
 
+helps['billing policy'] = """
+    type: group
+    short-summary: billing policy
+"""
+
+helps['billing policy show'] = """
+    type: command
+    short-summary: Show the policies for a customer or for a billing profile. This operation is supported only for billing accounts with \
+agreement type Microsoft Partner Agreement."
+    examples:
+      - name: List the policies for a customer
+        text: |-
+               az billing policy show --account-name "{billingAccountName}" --customer-name "{customerName}"
+      - name: List the policies for a billing profile
+        text: |-
+               az billing policy show --account-name "{billingAccountName}" --profile-name "{billingProfileName}"
+"""
+
+helps['billing policy update'] = """
+    type: command
+    short-summary: "Update the policies for a billing profile. This operation is supported only for billing accounts \
+with agreement type Microsoft Customer Agreement."
+    examples:
+      - name: Update the policy for a billing profile
+        text: |-
+               az billing policy update --account-name "{billingAccountName}" --profile-name "{billingProfileName}" \
+--marketplace-purchases "OnlyFreeAllowed" --reservation-purchases "NotAllowed" --view-charges "Allowed"
+"""
 
 helps['billing property'] = """
     type: group
