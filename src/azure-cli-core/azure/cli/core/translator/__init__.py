@@ -10,3 +10,4 @@ from .action import cls_action_wrapper, cls_action_factory_wrapper
 from .completer import func_completer_wrapper, completer_factory_wrapper
 from .type_converter import func_type_converter_wrapper, func_type_converter_factory_wrapper
 from .arg_type import register_arg_type, arg_type_factory_wrapper
+from .resource_type import register_custom_resource_type
