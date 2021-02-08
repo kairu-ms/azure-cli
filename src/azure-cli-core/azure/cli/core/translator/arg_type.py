@@ -9,9 +9,9 @@ from knack.arguments import CLIArgumentType
 
 class AzArgType(CLIArgumentType):
 
-    def __init__(self, instance):
+    def __init__(self, overrides=None, **kwargs):
         self._is_registed = False
-        super(AzArgType, self).__init__(**instance.settings)
+        super(AzArgType, self).__init__(overrides=overrides, **kwargs)
         self._is_registed = True
 
     def update(self, *args, **kwargs):
@@ -20,14 +20,14 @@ class AzArgType(CLIArgumentType):
         super(AzArgType, self).update(*args, **kwargs)
 
 
-class AzArgTypeInstance(AzArgType):
+class AzRegisteredArgType(AzArgType):
 
-    def __init__(self, instance, import_module, register_name):
+    def __init__(self, register_name, import_module, overrides=None, **kwargs):
         self.import_module = import_module
         self.register_name = register_name
-        if not isinstance(instance, CLIArgumentType):
-            raise TypeError('Expect type is CLIArgumentType. Got "{}"'.format(type(instance)))
-        super(AzArgTypeInstance, self).__init__(instance=instance)
+        # if not isinstance(instance, CLIArgumentType):
+        #     raise TypeError('Expect type is CLIArgumentType. Got "{}"'.format(type(instance)))
+        super(AzRegisteredArgType, self).__init__(overrides=overrides, **kwargs)
 
 
 class AzArgTypeByFactory(AzArgType):
@@ -53,13 +53,13 @@ class AzArgTypeByFactory(AzArgType):
         self.kwargs.update(kwargs)
         if not isinstance(instance, CLIArgumentType):
             raise TypeError('Expect type is CLIArgumentType. Got "{}"'.format(type(instance)))
-        super(AzArgTypeByFactory, self).__init__(instance=instance)
+        super(AzArgTypeByFactory, self).__init__(**instance.settings)
 
 
-def register_arg_type(instance, register_name):
+def register_arg_type(register_name, overrides=None, **kwargs):
     parent_frame = inspect.stack()[1].frame
     import_module = inspect.getmodule(parent_frame).__name__
-    return AzArgTypeInstance(instance, import_module, register_name)
+    return AzRegisteredArgType(register_name, import_module, overrides=overrides, **kwargs)
 
 
 def arg_type_factory_wrapper(factory):

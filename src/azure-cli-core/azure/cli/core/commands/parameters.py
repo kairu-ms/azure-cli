@@ -269,7 +269,8 @@ def get_enum_type(data, default=None):
 
 # GLOBAL ARGUMENT DEFINITIONS
 
-resource_group_name_type = CLIArgumentType(
+resource_group_name_type = register_arg_type(
+    'resource_group_name_type',
     options_list=['--resource-group', '-g'],
     completer=get_resource_group_completion_list,
     id_part='resource_group',
@@ -280,10 +281,8 @@ resource_group_name_type = CLIArgumentType(
         actions=[LocalContextAction.SET, LocalContextAction.GET],
         scopes=[ALL]
     ))
-resource_group_name_type = register_arg_type(resource_group_name_type, 'resource_group_name_type')
 
-name_type = CLIArgumentType(options_list=['--name', '-n'], help='the primary resource name')
-name_type = register_arg_type(name_type, 'name_type')
+name_type = register_arg_type('name_type', options_list=['--name', '-n'], help='the primary resource name')
 
 
 @arg_type_factory_wrapper
@@ -304,62 +303,63 @@ def get_location_type(cli_ctx):
     return location_type
 
 
-deployment_name_type = CLIArgumentType(
+deployment_name_type = register_arg_type(
+    'deployment_name_type',
     help=argparse.SUPPRESS,
     required=False,
     validator=generate_deployment_name
 )
-deployment_name_type = register_arg_type(deployment_name_type, 'deployment_name_type')
 
 quotes = '""' if platform.system() == 'Windows' else "''"
 quote_text = 'Use {} to clear existing tags.'.format(quotes)
 
-tags_type = CLIArgumentType(
+tags_type = register_arg_type(
+    'tags_type',
     validator=validate_tags,
     help="space-separated tags: key[=value] [key[=value] ...]. {}".format(quote_text),
     nargs='*'
 )
-tags_type = register_arg_type(tags_type, 'tags_type')
 
-tag_type = CLIArgumentType(
+tag_type = register_arg_type(
+    'tag_type',
     type=validate_tag,
     help="a single tag in 'key[=value]' format. {}".format(quote_text),
     nargs='?',
     const=''
 )
-tag_type = register_arg_type(tag_type, 'tag_type')
 
-no_wait_type = CLIArgumentType(
+no_wait_type = register_arg_type(
+    'no_wait_type',
     options_list=['--no-wait', ],
     help='do not wait for the long-running operation to finish',
     action='store_true'
 )
-no_wait_type = register_arg_type(no_wait_type, 'no_wait_type')
 
-zones_type = CLIArgumentType(
+zones_type = register_arg_type(
+    'zones_type',
     options_list=['--zones', '-z'],
     nargs='+',
     help='Space-separated list of availability zones into which to provision the resource.',
     choices=['1', '2', '3']
 )
-zones_type = register_arg_type(zones_type, 'zones_type')
 
-zone_type = CLIArgumentType(
+zone_type = register_arg_type(
+    'zone_type',
     options_list=['--zone', '-z'],
     help='Availability zone into which to provision the resource.',
     choices=['1', '2', '3'],
     nargs=1
 )
-zone_type = register_arg_type(zone_type, 'zone_type')
 
-vnet_name_type = CLIArgumentType(
+vnet_name_type = register_arg_type(
+    'vnet_name_type',
     local_context_attribute=LocalContextAttribute(name='vnet_name', actions=[LocalContextAction.GET])
 )
-vnet_name_type = register_arg_type(vnet_name_type, 'vnet_name_type')
 
-subnet_name_type = CLIArgumentType(
-    local_context_attribute=LocalContextAttribute(name='subnet_name', actions=[LocalContextAction.GET]))
-subnet_name_type = register_arg_type(subnet_name_type, 'subnet_name_type')
+subnet_name_type = register_arg_type(
+    'subnet_name_type',
+    local_context_attribute=LocalContextAttribute(name='subnet_name', actions=[LocalContextAction.GET])
+)
 
 
 def patch_arg_make_required(argument):
