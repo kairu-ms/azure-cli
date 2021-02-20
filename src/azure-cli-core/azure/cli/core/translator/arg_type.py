@@ -10,12 +10,12 @@ from knack.arguments import CLIArgumentType
 class AzArgType(CLIArgumentType):
 
     def __init__(self, overrides=None, **kwargs):
-        self._is_registed = False
+        self._is_registered = False
         super(AzArgType, self).__init__(overrides=overrides, **kwargs)
-        self._is_registed = True
+        self._is_registered = True
 
     def update(self, *args, **kwargs):
-        if self._is_registed:
+        if self._is_registered:
             raise NotImplementedError("Not support to update registered arg type")
         super(AzArgType, self).update(*args, **kwargs)
 
