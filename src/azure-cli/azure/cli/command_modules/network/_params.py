@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long, too-many-lines
-from azure.cli.core.translator.completer import FilesCompleter
+from azure.cli.core.translator.external_completer import FilesCompleter
 
 import six
 
