@@ -19,20 +19,20 @@ from azure.cli.command_modules.monitor.validators import (
     get_action_group_id_validator, validate_metric_dimension, validate_storage_accounts_name_or_id,
     process_subscription_id, process_workspace_data_export_destination)
 
-from knack.arguments import CLIArgumentType
+from azure.cli.core.translator import register_arg_type
 
 
 # pylint: disable=line-too-long, too-many-statements
 def load_arguments(self, _):
     from azure.mgmt.monitor.models import ConditionOperator, TimeAggregationOperator, EventData
     from .grammar.metric_alert.MetricAlertConditionValidator import dim_op_conversion, agg_conversion, op_conversion, sens_conversion
-    name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
-    webhook_prop_type = CLIArgumentType(validator=process_webhook_prop, nargs='*')
+    name_arg_type = register_arg_type('name_arg_type', options_list=['--name', '-n'], metavar='NAME')
+    webhook_prop_type = register_arg_type('webhook_prop_type', validator=process_webhook_prop, nargs='*')
 
-    autoscale_name_type = CLIArgumentType(options_list=['--autoscale-name'], help='Name of the autoscale settings.', id_part='name')
-    autoscale_profile_name_type = CLIArgumentType(options_list=['--profile-name'], help='Name of the autoscale profile.')
-    autoscale_rule_name_type = CLIArgumentType(options_list=['--rule-name'], help='Name of the autoscale rule.')
-    scope_name_type = CLIArgumentType(help='Name of the Azure Monitor Private Link Scope.')
+    autoscale_name_type = register_arg_type('autoscale_name_type', options_list=['--autoscale-name'], help='Name of the autoscale settings.', id_part='name')
+    autoscale_profile_name_type = register_arg_type('autoscale_profile_name_type', options_list=['--profile-name'], help='Name of the autoscale profile.')
+    autoscale_rule_name_type = register_arg_type('autoscale_rule_name_type', options_list=['--rule-name'], help='Name of the autoscale rule.')
+    scope_name_type = register_arg_type('scope_name_type', help='Name of the Azure Monitor Private Link Scope.')
 
     with self.argument_context('monitor') as c:
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)

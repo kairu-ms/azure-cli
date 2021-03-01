@@ -9,8 +9,10 @@ from azure.cli.command_modules.monitor.util import (
     get_aggregation_map, get_operator_map, get_autoscale_scale_direction_map)
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.translator import action_class, action_class_by_factory, type_converter_func, type_converter_by_factory
 
 
+@type_converter_func
 def timezone_name_type(value):
     from azure.cli.command_modules.monitor._autoscale_util import AUTOSCALE_TIMEZONES
     zone = next((x['name'] for x in AUTOSCALE_TIMEZONES if x['name'].lower() == value.lower()), None)
@@ -20,6 +22,7 @@ def timezone_name_type(value):
     return zone
 
 
+@type_converter_by_factory
 def timezone_offset_type(value):
 
     try:
@@ -46,6 +49,7 @@ def timezone_offset_type(value):
     return value
 
 
+@type_converter_by_factory
 def get_period_type(as_timedelta=False):
 
     def period_type(value):
@@ -87,6 +91,7 @@ def get_period_type(as_timedelta=False):
 
 
 # pylint: disable=protected-access, too-few-public-methods
+@action_class
 class MetricAlertConditionAction(argparse._AppendAction):
 
     def __call__(self, parser, namespace, values, option_string=None):
@@ -134,6 +139,7 @@ class MetricAlertConditionAction(argparse._AppendAction):
 
 
 # pylint: disable=protected-access, too-few-public-methods
+@action_class
 class MetricAlertAddAction(argparse._AppendAction):
 
     def __call__(self, parser, namespace, values, option_string=None):
@@ -157,6 +163,7 @@ class MetricAlertAddAction(argparse._AppendAction):
 
 
 # pylint: disable=too-few-public-methods
+@action_class
 class ConditionAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         from azure.mgmt.monitor.models import ThresholdRuleCondition, RuleMetricDataSource
@@ -183,6 +190,7 @@ class ConditionAction(argparse.Action):
 
 
 # pylint: disable=protected-access
+@action_class
 class AlertAddAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -204,6 +212,7 @@ class AlertAddAction(argparse._AppendAction):
         raise InvalidArgumentValueError('usage error: {} TYPE KEY [ARGS]'.format(option_string))
 
 
+@action_class
 class AlertRemoveAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -219,6 +228,7 @@ class AlertRemoveAction(argparse._AppendAction):
 
 
 # pylint: disable=protected-access
+@action_class
 class AutoscaleAddAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -240,6 +250,7 @@ class AutoscaleAddAction(argparse._AppendAction):
         raise InvalidArgumentValueError('{} TYPE KEY [ARGS]'.format(option_string))
 
 
+@action_class
 class AutoscaleRemoveAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -254,6 +265,7 @@ class AutoscaleRemoveAction(argparse._AppendAction):
         return values[1:]
 
 
+@action_class
 class AutoscaleConditionAction(argparse.Action):  # pylint: disable=protected-access
     def __call__(self, parser, namespace, values, option_string=None):
         # antlr4 is not available everywhere, restrict the import scope so that commands
@@ -289,6 +301,7 @@ class AutoscaleConditionAction(argparse.Action):  # pylint: disable=protected-ac
         namespace.condition = autoscale_condition
 
 
+@action_class
 class AutoscaleScaleAction(argparse.Action):  # pylint: disable=protected-access
     def __call__(self, parser, namespace, values, option_string=None):
         from azure.mgmt.monitor.models import ScaleAction, ScaleType
@@ -342,6 +355,7 @@ class MultiObjectsDeserializeAction(argparse._AppendAction):  # pylint: disable=
         raise NotImplementedError()
 
 
+@action_class
 class ActionGroupReceiverParameterAction(MultiObjectsDeserializeAction):
     def deserialize_object(self, type_name, type_properties):
         from azure.mgmt.monitor.models import EmailReceiver, SmsReceiver, WebhookReceiver, \

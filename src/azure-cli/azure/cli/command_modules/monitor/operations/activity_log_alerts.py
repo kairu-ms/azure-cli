@@ -2,8 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from azure.cli.core.translator import validator_func
 
 
+@validator_func
 def process_condition_parameter(namespace):
     from azure.mgmt.monitor.models import ActivityLogAlertAllOfCondition
     from knack.util import CLIError

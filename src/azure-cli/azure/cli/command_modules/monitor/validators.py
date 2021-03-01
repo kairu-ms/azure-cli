@@ -5,10 +5,11 @@
 
 from azure.cli.core.commands.validators import validate_tags, get_default_location_from_resource_group
 from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
-
+from azure.cli.core.translator import validator_func, validator_by_factory
 from knack.util import CLIError
 
 
+@validator_func
 def process_autoscale_create_namespace(cmd, namespace):
     from msrestazure.tools import parse_resource_id
 
@@ -19,6 +20,7 @@ def process_autoscale_create_namespace(cmd, namespace):
     get_default_location_from_resource_group(cmd, namespace)
 
 
+@validator_func
 def validate_autoscale_recurrence(namespace):
     from azure.mgmt.monitor.models import Recurrence, RecurrentSchedule, RecurrenceFrequency
 
@@ -67,6 +69,7 @@ def validate_autoscale_recurrence(namespace):
             raise CLIError('invalid usage: -r {{{}}} [ARG ARG ...]'.format(','.join(valid_recurrence)))
 
 
+@validator_func
 def validate_autoscale_timegrain(namespace):
     from azure.mgmt.monitor.models import MetricTrigger
     from azure.cli.command_modules.monitor.actions import get_period_type
@@ -140,6 +143,7 @@ def get_target_resource_validator(dest, required, preserve_resource_group_parame
     return _validator
 
 
+@validator_func
 def validate_metrics_alert_dimension(namespace):
     from azure.cli.command_modules.monitor.grammar.metric_alert.MetricAlertConditionValidator import dim_op_conversion
     for keyword, value in dim_op_conversion.items():
@@ -147,6 +151,7 @@ def validate_metrics_alert_dimension(namespace):
             namespace.operator = keyword
 
 
+@validator_func
 def validate_metrics_alert_condition(namespace):
     from azure.cli.command_modules.monitor.grammar.metric_alert.MetricAlertConditionValidator import op_conversion, \
         agg_conversion, sens_conversion
@@ -202,6 +207,7 @@ def validate_metrics_alert_condition(namespace):
         raise NotImplementedError()
 
 
+@validator_func
 def validate_diagnostic_settings(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
     from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
@@ -273,6 +279,7 @@ def _validate_tag(string):
     return result
 
 
+@validator_func
 def process_action_group_detail_for_creation(namespace):
     from azure.mgmt.monitor.models import ActionGroupResource, EmailReceiver, SmsReceiver, WebhookReceiver, \
         ArmRoleReceiver, AzureAppPushReceiver, ItsmReceiver, AutomationRunbookReceiver, \
@@ -304,6 +311,7 @@ def process_action_group_detail_for_creation(namespace):
     ns['action_group'] = ActionGroupResource(**action_group_resource_properties)
 
 
+@validator_func
 def validate_metric_dimension(namespace):
 
     if not namespace.dimension:
@@ -315,6 +323,7 @@ def validate_metric_dimension(namespace):
     namespace.filters = ' and '.join("{} eq '*'".format(d) for d in namespace.dimension)
 
 
+@validator_func
 def process_webhook_prop(namespace):
     if not isinstance(namespace.webhook_properties, list):
         return
@@ -331,6 +340,7 @@ def process_webhook_prop(namespace):
     namespace.webhook_properties = result
 
 
+@validator_by_factory
 def get_action_group_validator(dest):
     def validate_action_groups(cmd, namespace):
         action_groups = getattr(namespace, dest, None)
@@ -355,6 +365,7 @@ def get_action_group_validator(dest):
     return validate_action_groups
 
 
+@validator_by_factory
 def get_action_group_id_validator(dest):
     def validate_action_group_ids(cmd, namespace):
         action_groups = getattr(namespace, dest, None)
@@ -382,6 +393,7 @@ def get_action_group_id_validator(dest):
     return validate_action_group_ids
 
 
+@validator_func
 def validate_private_endpoint_connection_id(namespace):
     if namespace.connection_id:
         from azure.cli.core.util import parse_proxy_resource_id
@@ -396,6 +408,7 @@ def validate_private_endpoint_connection_id(namespace):
     del namespace.connection_id
 
 
+@validator_func
 def validate_storage_accounts_name_or_id(cmd, namespace):
     if namespace.storage_account_ids:
         from msrestazure.tools import is_valid_resource_id, resource_id
@@ -411,11 +424,13 @@ def validate_storage_accounts_name_or_id(cmd, namespace):
                 )
 
 
+@validator_func
 def process_subscription_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
     namespace.subscription_id = get_subscription_id(cmd.cli_ctx)
 
 
+@validator_func
 def process_workspace_data_export_destination(namespace):
     if namespace.destination:
         from azure.mgmt.core.tools import is_valid_resource_id, resource_id, parse_resource_id
