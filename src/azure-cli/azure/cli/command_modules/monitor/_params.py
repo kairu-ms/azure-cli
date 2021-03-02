@@ -3,10 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.util import get_json_object
 
 from azure.cli.core.commands.parameters import (
-    get_location_type, tags_type, get_three_state_flag, get_enum_type, get_datetime_type, resource_group_name_type)
+    get_location_type, tags_type, get_three_state_flag, get_enum_type, get_datetime_type, resource_group_name_type,
+    json_object_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from azure.cli.command_modules.monitor.actions import (
@@ -248,7 +248,7 @@ def load_arguments(self, _):
         c.argument('autoscale_setting_name', options_list=['--name', '-n'])
 
     with self.argument_context('monitor autoscale-settings create') as c:
-        c.argument('parameters', type=get_json_object, help='JSON encoded parameters configuration. Use @{file} to load from a file. Use az autoscale-settings get-parameters-template to export json template.')
+        c.argument('parameters', type=json_object_type, help='JSON encoded parameters configuration. Use @{file} to load from a file. Use az autoscale-settings get-parameters-template to export json template.')
 
     for scope in ['monitor autoscale-settings show', 'monitor autoscale-settings delete']:
         with self.argument_context(scope) as c:
@@ -277,8 +277,8 @@ def load_arguments(self, _):
 
     with self.argument_context('monitor diagnostic-settings create') as c:
         c.resource_parameter('resource_uri', required=True, arg_group='Target Resource', skip_validator=True)
-        c.argument('logs', type=get_json_object)
-        c.argument('metrics', type=get_json_object)
+        c.argument('logs', type=json_object_type)
+        c.argument('metrics', type=json_object_type)
         c.argument('export_to_resource_specific', arg_type=get_three_state_flag(),
                    help='Indicate that the export to LA must be done to a resource specific table, '
                         'a.k.a. dedicated or fixed schema table, '
@@ -294,7 +294,7 @@ def load_arguments(self, _):
     with self.argument_context('monitor diagnostic-settings subscription') as c:
         import argparse
         c.argument('subscription_id', validator=process_subscription_id, help=argparse.SUPPRESS, required=False)
-        c.argument('logs', type=get_json_object, help="JSON encoded list of logs settings. Use '@{file}' to load from a file.")
+        c.argument('logs', type=json_object_type, help="JSON encoded list of logs settings. Use '@{file}' to load from a file.")
         c.argument('name', help='The name of the diagnostic setting.', options_list=['--name', '-n'])
         c.argument('event_hub_name', help='The name of the event hub. If none is specified, the default event hub will be selected.')
         c.argument('event_hub_auth_rule', help='The resource Id for the event hub authorization rule.')
