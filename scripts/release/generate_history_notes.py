@@ -66,9 +66,17 @@ def generate_history_notes():
         prs = get_prs_for_commit(commit['sha'])
         # parse PR if one commit is mapped to one PR
         if len(prs) == 1:
-            process_pr(prs[0])
+            try:
+                process_pr(prs[0])
+            except Exception:
+                print('ErrorInPR: ' + prs[0]['title'])
+                raise
         else:
-            process_commit(commit)
+            try:
+                process_commit(commit)
+            except Exception:
+                print('ErrorInCommit: ' + commit['subject'])
+                raise
 
     cli_history = ''
     core_history = ''
