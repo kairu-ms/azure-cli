@@ -157,6 +157,7 @@ cat >>$testsrc_dir/setup.py <<EOL
                        '**/*.txt',
                        '**/*.json',
                        '**/*.ipynb',
+                       '**/*.jar',
                        '**/*.byok',
                        '**/*.js',
                        '**/*.md',
