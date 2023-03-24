@@ -241,11 +241,12 @@ def _get_mgmt_service_client(cli_ctx,
         client_kwargs['api_version'] = api_version
     if sdk_profile:
         client_kwargs['profile'] = sdk_profile
-    if kwargs:
-        client_kwargs.update(kwargs)
 
     if is_track2(client_type):
         client_kwargs.update(_prepare_mgmt_client_kwargs_track2(cli_ctx, credential))
+
+    if kwargs:
+        client_kwargs.update(kwargs)
 
     if subscription_bound:
         client = client_type(credential, subscription_id, **client_kwargs)
